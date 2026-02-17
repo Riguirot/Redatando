@@ -1,0 +1,17 @@
+{
+  "name": "redatando",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+
+   "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "dev:frontend": "npm run dev -w apps/frontend",
+    "dev:backend": "npm run dev -w apps/backend",
+    "build:frontend": "npm run build -w apps/frontend",
+    "build:backend": "npm run build -w apps/backend"
+  }
+}
