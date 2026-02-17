@@ -1,0 +1,76 @@
+---
+import ThemeToggle from "../common/ThemeToggle.astro";
+import CoinCreditMiniIcon from "../../icons/CoinCreditMiniIcon.astro";
+
+interface Props {
+  credits: number;
+  studentInitial: string;
+}
+
+const { credits, studentInitial } = Astro.props;
+
+const creditText =
+  credits > 0
+    ? `${credits} Crédito${credits > 1 ? "s" : ""}`
+    : "Sem créditos – Comprar";
+---
+
+<nav class="border-b border-gray-200 dark:border-gray-800 backdrop-blur-md sticky top-0 z-50 bg-white/70 dark:bg-[#0a0e27]/70">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex justify-between items-center h-16">
+
+      <!-- LOGO -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-linear-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold">
+          R
+        </div>
+        <span class="text-lg font-bold bg-linear-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+          Redatando
+        </span>
+      </div>
+
+      <!-- MENU -->
+      <div class="hidden md:flex items-center gap-8 text-sm">
+        <a href="/dashboard" class="hover:text-purple-600 transition">Dashboard</a>
+        <a href="#" class="hover:text-purple-600 transition">Redações</a>
+        <a href="#" class="hover:text-purple-600 transition">Temas</a>
+        <a
+          href="#"
+          class="px-4 py-2 rounded-lg bg-linear-to-r from-purple-600 to-cyan-600 text-white font-medium hover:opacity-90 transition"
+        >
+          Enviar
+        </a>
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="flex items-center gap-4">
+
+        <!-- CREDITS BADGE -->
+        <a
+            href="#"
+            class="flex items-center gap-2 text-sm px-4 py-2 rounded-full
+                  bg-purple-100 dark:bg-purple-900
+                  text-purple-700 dark:text-purple-300 font-medium"
+          >
+          <CoinCreditMiniIcon w={18} h={18} />
+          {creditText}
+        </a>
+
+
+        <!-- NOTIFICATION -->
+        <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+          🔔
+        </button>
+
+        <!-- THEME -->
+        <ThemeToggle />
+
+        <!-- AVATAR -->
+        <div class="w-10 h-10 rounded-full bg-linear-to-br from-purple-400 to-cyan-500 flex items-center justify-center text-white font-bold">
+          {studentInitial}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</nav>

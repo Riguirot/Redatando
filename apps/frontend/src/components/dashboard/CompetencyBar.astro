@@ -1,0 +1,24 @@
+---
+import ProgressBar from "./ProgressBar.astro";
+
+interface Props {
+  label: string;
+  value: number;
+  max: number;
+}
+
+const { label, value, max } = Astro.props;
+
+const percentage = Math.round((value / max) * 100);
+---
+
+<div class="mb-4">
+  <div class="flex justify-between items-center mb-2">
+    <span class="text-sm font-medium">{label}</span>
+    <span class="text-sm font-bold text-purple-600">
+      {value}/{max}
+    </span>
+  </div>
+
+  <ProgressBar percentage={percentage} height="6px" />
+</div>

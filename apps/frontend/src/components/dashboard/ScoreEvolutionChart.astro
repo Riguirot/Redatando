@@ -1,0 +1,55 @@
+---
+interface Props {
+  scores: number[];
+}
+
+const { scores } = Astro.props;
+
+const maxScore = Math.max(...scores);
+const minScore = Math.min(...scores);
+
+const width = 100;
+const height = 60;
+
+const points = scores
+  .map((score, i) => {
+    const x = (i / (scores.length - 1)) * width;
+
+    const normalized =
+      (score - minScore) / (maxScore - minScore || 1);
+
+    const y = height - normalized * height;
+
+    return `${x},${y}`;
+  })
+  .join(" ");
+---
+
+<div class="mb-8">
+  <h4 class="text-sm text-gray-500 mb-2">
+    Evolução das Notas
+  </h4>
+
+  <svg
+    viewBox={`0 0 ${width} ${height}`}
+    class="w-full h-40"
+  >
+    <polyline
+      fill="none"
+      stroke="url(#gradient)"
+      stroke-width="3"
+      points={points}
+    />
+
+    <defs>
+      <linearGradient id="gradient">
+        <stop offset="0%" stop-color="#9333ea" />
+        <stop offset="100%" stop-color="#06b6d4" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <span class="text-xs text-purple-500 font-semibold">
+    +120 pontos
+  </span>
+</div>

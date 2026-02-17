@@ -1,0 +1,86 @@
+---
+import MetricCard from "./MetricCard.astro";
+
+import DocumentIcon from "../../icons/DocumentIcon.astro";
+import StarIcon from "../../icons/StarIcon.astro";
+import FlameIcon from "../../icons/FlameIcon.astro";
+import BarChartIcon from "../../icons/BarChartIcon.astro";
+
+import type { EvolutionResult } from "../../domain/services/calculateEvolution";
+import type { DashboardMetric } from "../../types/dashboard";
+
+interface Props {
+  totalEssays: number;
+  averageScore: number;
+  evolutionLastThree: EvolutionResult;
+  streakWeeks: number;
+}
+
+const {
+  totalEssays,
+  averageScore,
+  evolutionLastThree,
+  streakWeeks,
+} = Astro.props;
+
+const { value, trend } = evolutionLastThree;
+
+const evolutionVariation =
+  trend === "up"
+    ? `+${value}`
+    : trend === "down"
+    ? `-${value}`
+    : `${value}`;
+
+const evolutionVariationType =
+  trend === "up" ? "positive" : trend === "down" ? "negative" : "neutral";
+
+const metrics: DashboardMetric[] = [
+  {
+    title: "Redações Enviadas",
+    value: totalEssays,
+    variation: "+2",
+    variationType: "positive",
+    icon: DocumentIcon,
+    iconColor: "text-purple-500",
+    iconBg: "bg-purple-500/10",
+  },
+  {
+    title: "Média Geral",
+    value: averageScore,
+    variation: "+18",
+    variationType: "positive",
+    icon: StarIcon,
+    iconColor: "text-yellow-500",
+    iconBg: "bg-yellow-500/10",
+  },
+  {
+    title: "Evolução Recente",
+    value: value,
+    variation: evolutionVariation,
+    variationType: evolutionVariationType,
+    icon: BarChartIcon,
+    iconColor: "text-blue-500",
+    iconBg: "bg-blue-500/10",
+  },
+  {
+    title: "Semanas em sequência",
+    value: streakWeeks,
+    variation: "Consistência ativa",
+    variationType: "positive",
+    icon: FlameIcon,
+    iconColor: "text-orange-500",
+    iconBg: "bg-orange-500/10",
+  },
+];
+---
+
+<section class="mb-12">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {metrics.map((metric) => (
+        <MetricCard {...metric} />
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,64 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  value: string;
+  variation?: string;
+  icon?: string;
+}
+
+const { title, subtitle, value, variation, icon } = Astro.props;
+---
+
+<div
+  class="group rounded-2xl border border-white/10 
+         bg-linear-to-b from-white/5 to-white/0 
+         p-6 transition-all duration-300 
+         hover:-translate-y-0.5 
+         hover:border-purple-500/40
+         dark:from-white/5 dark:to-white/0
+         bg-white dark:bg-transparent dark:border-white/10"
+>
+
+  <!-- Ícone -->
+  <div class="mb-4 flex items-center justify-between">
+    <div class="h-12 w-12 flex items-center justify-center rounded-xl 
+                bg-linear-to-br from-purple-500 to-fuchsia-600 text-white text-lg">
+      {icon}
+    </div>
+  </div>
+
+  <!-- Número + variação -->
+  <div class="flex items-center gap-3">
+    <h3 class="text-4xl font-bold text-purple-400 dark:text-purple-300">
+      {value}
+    </h3>
+
+    {variation && (
+      <span
+        class="inline-flex items-center gap-1 rounded-full px-3 py-1 
+               text-sm font-medium bg-emerald-500/15 text-emerald-400"
+      >
+        ↑ {variation}
+      </span>
+    )}
+  </div>
+
+  <!-- Subtexto -->
+  <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+    vs. mês anterior
+  </p>
+
+  <div class="my-4 h-px bg-gray-200 dark:bg-white/10"></div>
+
+  <!-- Título -->
+  <p class="text-lg font-semibold text-gray-800 dark:text-white">
+    {title}
+  </p>
+
+  <!-- Subtitle -->
+  <p class="text-sm text-gray-500 dark:text-gray-400">
+    {subtitle}
+  </p>
+
+</div>

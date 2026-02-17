@@ -1,0 +1,42 @@
+---
+interface Insight {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+interface Props {
+  insights: Insight[];
+}
+
+const { insights } = Astro.props as Props;
+---
+<section class="mb-12">
+  <div class="card p-8">
+    <h3 class="text-xl font-bold mb-6">
+      💡 Insights Inteligentes
+    </h3>
+
+    <div class="space-y-4">
+      {insights.map((insight) => (
+        <div class="bg-linear-to-r from-purple-100/40 to-cyan-100/30 dark:from-purple-900/40 dark:to-cyan-900/30 border border-purple-200 dark:border-purple-800 rounded-xl p-4">
+          <div class="flex items-start gap-3">
+            <div class="text-xl">
+              {insight.icon}
+            </div>
+
+            <div>
+              <p class="font-semibold text-sm">
+                {insight.title}
+              </p>
+
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                {insight.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

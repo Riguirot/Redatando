@@ -1,0 +1,107 @@
+---
+import CompetencyBar from "./CompetencyBar.astro";
+import ProgressBar from "./ProgressBar.astro";
+import ScoreEvolutionChart from "./ScoreEvolutionChart.astro";
+
+interface Competency {
+  label: string;
+  value: number;
+  max: number;
+}
+
+interface Props {
+  competencies: Competency[];
+  overallProgress: number;
+  evolutionTotal: number;
+  scoresHistory: number[];
+}
+
+const { competencies, overallProgress, evolutionTotal, scoresHistory } = Astro.props;
+---
+
+<section class="mb-12">
+
+  <div class="glass-card p-8">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-start mb-8">
+
+      <div>
+        <h3 class="text-xl font-bold flex items-center gap-2
+                   text-neutral-900 dark:text-neutral-100">
+          📊 Desempenho Analítico
+        </h3>
+
+        <p class="text-sm mt-1
+                  text-neutral-600 dark:text-neutral-400">
+          Evolução das Notas
+        </p>
+      </div>
+
+      <span
+        class="
+          text-sm font-semibold
+          px-4 py-1.5
+          rounded-full
+          bg-purple-100 text-purple-600
+          dark:bg-purple-900/40 dark:text-purple-300
+        "
+      >
+        +{evolutionTotal} pontos
+      </span>
+
+    </div>
+
+    <!-- GRÁFICO -->
+    <ScoreEvolutionChart scores={scoresHistory} />
+
+    <!-- COMPETÊNCIAS -->
+    <div class="mt-10">
+      <h4 class="font-semibold mb-5
+                 text-neutral-800 dark:text-neutral-200">
+        Progresso por Competências
+      </h4>
+
+      {competencies.map((comp) => (
+        <CompetencyBar
+          label={comp.label}
+          value={comp.value}
+          max={comp.max}
+        />
+      ))}
+    </div>
+
+    <!-- DIVISÃO -->
+    <div class="my-8 border-t border-neutral-200 dark:border-[#1F2A44]" />
+
+    <!-- PROGRESSO GERAL -->
+    <div>
+      <div class="flex justify-between items-center mb-3">
+
+        <h4 class="font-semibold
+                   text-neutral-800 dark:text-neutral-200">
+          Progresso Geral
+        </h4>
+
+        <span
+          class="
+            text-2xl font-bold
+            bg-linear-to-r from-purple-500 to-cyan-400
+            bg-clip-text text-transparent
+          "
+        >
+          {overallProgress}%
+        </span>
+
+      </div>
+
+      <ProgressBar percentage={overallProgress} height="12px" />
+
+      <p class="text-sm mt-4
+                text-neutral-600 dark:text-neutral-400">
+        Você está muito perto da excelência! Continue praticando para maximizar todas as competências.
+      </p>
+    </div>
+
+  </div>
+</section>

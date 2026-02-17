@@ -1,0 +1,91 @@
+---
+interface Props {
+  studentName: string;
+  subtitle: string;
+}
+
+const { studentName, subtitle } = Astro.props;
+---
+
+<section class="mb-12">
+
+  <!-- Greeting -->
+  <div class="animate-in">
+    <h2 class="text-4xl md:text-5xl font-bold mb-2 
+               text-slate-900 dark:text-white">
+      Olá, {studentName} 👋
+    </h2>
+
+    <p class="text-lg 
+              text-slate-600 dark:text-slate-400 mb-6">
+      {subtitle}
+    </p>
+  </div>
+
+  <!-- Next Step Card -->
+  <div
+    class="
+      relative overflow-hidden
+      p-6 rounded-2xl
+      border transition-all duration-300
+      bg-linear-to-br
+      from-indigo-100 to-cyan-100
+      dark:from-purple-950 dark:to-cyan-950
+      border-indigo-200
+      dark:border-purple-800
+      shadow-md
+      dark:shadow-[0_10px_40px_rgba(139,92,246,0.15)]
+      animate-in delay-100
+    "
+  >
+    <div class="flex items-start justify-between gap-4">
+
+      <div class="flex-1">
+
+        <!-- Label -->
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-indigo-600 dark:text-purple-300">⚡</span>
+          <span class="
+            text-sm font-semibold
+            text-indigo-700
+            dark:text-purple-300
+          ">
+            Próximo Passo
+          </span>
+        </div>
+
+        <!-- Title -->
+        <h3 class="
+          text-lg font-bold mb-1
+          text-slate-900
+          dark:text-white
+        ">
+          Envie uma redação essa semana
+        </h3>
+
+        <!-- Description -->
+        <p class="
+          text-sm
+          text-slate-600
+          dark:text-slate-300
+        ">
+          Mantenha sua evolução praticando regularmente. Você está no caminho certo!
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <a
+        href="/enviar"
+        class="
+          btn btn-primary
+          text-sm whitespace-nowrap
+          self-start
+        "
+      >
+        Enviar agora
+      </a>
+
+    </div>
+  </div>
+
+</section>

@@ -1,0 +1,72 @@
+---
+interface Props {
+  focus: {
+    weakestCompetence: string;
+  };
+}
+
+const { focus } = Astro.props;
+
+const competenceMap: Record<string, string> = {
+  C1: "Norma Culta",
+  C2: "Compreensão",
+  C3: "Argumentação",
+  C4: "Coesão",
+  C5: "Proposta",
+};
+
+const competenceName = competenceMap[focus.weakestCompetence] ?? "";
+---
+
+<div class="glass-card w-full">
+  {/* Header */}
+  <div class="flex items-center gap-3 mb-2">
+    <span class="text-lg">🎯</span>
+    <div>
+      <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
+        Plano de Progresso
+      </h2>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400">
+        Baseado na sua última correção.
+      </p>
+    </div>
+  </div>
+
+  <div class="border-t border-neutral-200 dark:border-white/10 my-4"></div>
+
+  {/* Competência */}
+  <div class="flex items-center justify-between flex-wrap gap-4">
+    <div class="flex items-center gap-3">
+      <span class="text-3xl font-bold text-orange-500">
+        {focus.weakestCompetence}
+      </span>
+      <span class="text-base font-medium text-neutral-800 dark:text-neutral-200">
+        {competenceName}
+      </span>
+    </div>
+
+    <span class="px-4 py-1 rounded-full text-sm font-medium bg-orange-500/10 text-orange-500 border border-orange-500/20">
+      Foco Atual
+    </span>
+  </div>
+
+  <p class="mt-4 text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
+    Foi a competência com menor desempenho na sua última redação.
+    Recomendamos revisar o material específico e aplicar na próxima prática.
+  </p>
+
+  <div class="border-t border-neutral-200 dark:border-white/10 my-6"></div>
+
+  {/* CTA */}
+  <a
+      href={`/dashboard/competences/${focus.weakestCompetence}`}
+      class="w-full inline-flex items-center justify-center gap-2
+      px-6 py-3 rounded-xl font-medium text-white
+      bg-linear-to-r from-purple-600 to-purple-500
+      hover:opacity-90 transition-all duration-300"
+    >
+        <span>↻</span>
+        Revisar material dessa competência
+      </a>
+
+</div>

@@ -1,0 +1,97 @@
+---
+interface Theme {
+  title: string
+  tag: string
+  difficulty: "Fácil" | "Médio" | "Difícil"
+  focus: string
+}
+
+interface Props {
+  themes: Theme[]
+}
+
+const { themes } = Astro.props
+---
+
+<section class="space-y-6">
+
+  <h2 class="text-lg font-semibold text-white">
+    📚 Temas Recomendados
+  </h2>
+
+  {themes.map((theme) => {
+
+    const difficultyColor =
+      theme.difficulty === "Fácil"
+        ? "text-emerald-400"
+        : theme.difficulty === "Médio"
+        ? "text-yellow-400"
+        : "text-red-400"
+
+    return (
+      <div class="group rounded-2xl 
+            border border-gray-200 dark:border-white/10 
+            bg-white dark:bg-white/5 
+            p-6 
+            transition-all duration-300 
+            hover:border-purple-500/40 
+            dark:hover:shadow-[0_12px_40px_rgba(139,92,246,0.25)]">
+
+        <!-- HEADER -->
+        <div class="flex items-start justify-between mb-4">
+          <span class="px-3 py-1 text-xs font-medium rounded-full 
+                      bg-purple-100 text-purple-600
+                      dark:bg-purple-500/20 dark:text-purple-400">
+            ENEM
+          </span>
+
+          <span class={`text-sm font-medium 
+            ${
+              theme.difficulty === "Fácil"
+                ? "text-emerald-600 dark:text-emerald-400"
+                : theme.difficulty === "Médio"
+                ? "text-yellow-600 dark:text-yellow-400"
+                : "text-red-600 dark:text-red-400"
+            }`}>
+            {theme.difficulty}
+          </span>
+        </div>
+
+        <!-- TITLE -->
+        <h3 class="font-semibold text-lg mb-2
+                  text-gray-900 dark:text-white">
+          {theme.title}
+        </h3>
+
+        <!-- RECOMMENDATION -->
+        <p class="text-sm mb-6
+                  text-cyan-600 dark:text-cyan-400">
+          → Recomendado para {theme.focus}
+        </p>
+
+        <!-- CTA -->
+        <div class="rounded-xl border 
+                    border-gray-200 dark:border-white/10 
+                    overflow-hidden">
+
+          <button
+            class="w-full py-3 text-sm font-medium
+                  text-gray-600 dark:text-white/80
+                  bg-transparent 
+                  transition-all duration-300
+                  group-hover:bg-linear-to-r
+                  group-hover:from-purple-500
+                  group-hover:to-purple-600
+                  group-hover:text-white">
+            Escrever agora
+          </button>
+
+        </div>
+
+      </div>
+
+      )
+  
+  })}
+
+</section>

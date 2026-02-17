@@ -1,0 +1,96 @@
+---
+import CoinCreditIcon from "../../icons/CoinCreditIcon.svg";
+
+interface Props {
+  credits: number;
+}
+
+const { credits } = Astro.props;
+---
+
+<section>
+  <div
+  class="
+    relative overflow-hidden
+    p-6 rounded-2xl
+    border
+    transition-all duration-300 ease-in-out
+    bg-linear-to-br
+    from-emerald-200 to-emerald-300
+    dark:from-emerald-900 dark:to-emerald-800
+    border-emerald-300 dark:border-emerald-700
+    shadow-md
+
+    hover:-translate-y-0.5
+    hover:border-emerald-400
+    hover:shadow-[0_12px_40px_rgba(16,185,129,0.25)]
+
+    dark:hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)]
+  "
+>
+
+
+    <!-- Decorative glow -->
+    <div class="absolute -top-10 -right-10 w-40 h-40 
+                bg-white/20 dark:bg-emerald-400/10 
+                rounded-full blur-3xl pointer-events-none">
+    </div>
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6 relative z-10">
+      <h3 class="text-lg font-semibold 
+                 text-slate-900 
+                 dark:text-white">
+        Créditos
+      </h3>
+
+      <!-- Ícone -->
+      <span>
+        <CoinCreditIcon class="w-14 h-14" />
+      </span>
+    </div>
+
+    <!-- Número -->
+    <div class="text-5xl font-bold mb-2 
+                text-emerald-700 
+                dark:text-white">
+      {credits}
+    </div>
+
+    <!-- Descrição -->
+    <p class="text-sm mb-6
+              text-emerald-800
+              dark:text-emerald-100">
+      Você ainda pode enviar 
+      <strong>{credits}</strong> 
+      redaç{credits > 1 ? "ões" : "ão"}.
+    </p>
+
+    <!-- Botão -->
+    <a
+  href="#"
+  class="
+    w-full text-sm
+    rounded-xl
+    px-4 py-3
+    font-semibold
+
+    bg-emerald-500
+    text-white
+
+    transition-all duration-300 ease-in-out
+
+    shadow-md
+    hover:shadow-[0_8px_24px_rgba(16,185,129,0.35)]
+    hover:-translate-y-px
+
+    active:translate-y-px
+    active:shadow-sm
+  "
+>
+  Gerenciar Créditos
+</a>
+
+
+  </div>
+</section>

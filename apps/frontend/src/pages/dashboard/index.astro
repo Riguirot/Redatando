@@ -1,0 +1,72 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import WelcomeSection from "../../components/dashboard/WelcomeSection.astro";
+import SummaryCards from "../../components/dashboard/SummaryCards.astro";
+import MonthlyGoal from "../../components/dashboard/MonthlyGoal.astro";
+import InsightsSection from "../../components/dashboard/InsightsSection.astro";
+import PerformanceAnalytics from "../../components/dashboard/PerformanceAnalytics.astro";
+import RecommendedThemes from "../../components/dashboard/RecommendedThemes.astro";
+import CreditCard from "../../components/dashboard/CreditCard.astro";
+import ProgressFocusCard from "../../components/dashboard/ProgressFocusCard.astro";
+
+import { getDashboardData } from "../../application/usecases/getDashboardData";
+
+const data = await getDashboardData();
+---
+
+<DashboardLayout credits={data.credits} studentInitial={data.studentInitial}>
+
+  <!-- WELCOME -->
+  <WelcomeSection
+    studentName={data.studentName}
+    subtitle={data.subtitle}
+  />
+
+  <!-- 4 CARDS (FULL WIDTH) -->
+  <SummaryCards
+    totalEssays={data.totalEssays}
+    averageScore={data.averageScore}
+    evolutionLastThree={data.evolutionLastThree}
+    streakWeeks={data.streakWeeks}
+  />
+
+  <!-- BLOCO ABAIXO COM GRID -->
+  <div class="grid lg:grid-cols-3 gap-8 mt-12">
+
+    <!-- ESQUERDA -->
+    <div class="lg:col-span-2 space-y-12">
+      <MonthlyGoal
+        month={data.month}
+        completed={data.completed}
+        goal={data.goal}
+        daysSinceLastEssay={data.daysSinceLastEssay}
+      />
+
+      <InsightsSection insights={data.insights} />
+
+      <PerformanceAnalytics
+        competencies={data.competencies}
+        overallProgress={data.overallProgress}
+        scoresHistory={data.scoresHistory}
+        evolutionTotal={data.evolutionTotal}
+      />
+    </div>
+
+    <!-- DIREITA -->
+<div class="space-y-8 lg:mt-0">
+
+  {/* 🎯 Plano de Progresso */}
+  {data.progressFocus && (
+    <ProgressFocusCard focus={data.progressFocus} />
+  )}
+
+  {/* 🎯 Temas Recomendados */}
+  <RecommendedThemes themes={data.themes} />
+
+  {/* 💳 Créditos */}
+  <CreditCard credits={data.credits} />
+
+</div>
+
+
+</DashboardLayout>

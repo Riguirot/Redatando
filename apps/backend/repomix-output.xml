@@ -1,0 +1,3058 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.env.exemple
+.gitignore
+ARCHITECTURE.md
+estrutura.txt
+jest.config.ts
+package.json
+prisma.config.ts
+prisma/migrations/20260127014313_create_content/migration.sql
+prisma/migrations/20260201152427_add_credit_transactions/migration.sql
+prisma/migrations/20260201153641_add_essay_table/migration.sql
+prisma/migrations/migration_lock.toml
+prisma/schema.prisma
+ROADMAP.md
+src/@types/express/index.d.ts
+src/app.ts
+src/modules/credits/application/useCases/__tests__/CheckUserCreditsUseCase.spec.ts
+src/modules/credits/application/useCases/AddCreditsUseCase.ts
+src/modules/credits/application/useCases/CheckUserCreditsUseCase.ts
+src/modules/credits/application/useCases/RemoveCreditsUseCase.ts
+src/modules/credits/application/useCases/ToggleInfiniteCreditsUseCase.ts
+src/modules/credits/domain/entities/CreditTransaction.ts
+src/modules/credits/domain/errors/CreditBlockedError.ts
+src/modules/credits/domain/services/__tests__/CreditPolicyService.spec.ts
+src/modules/credits/domain/services/CreditPolicyService.ts
+src/modules/credits/infra/database/PrismaCreditRepository.ts
+src/modules/credits/ports/CreditRepository.ts
+src/modules/credits/presentation/controllers/CreditAdminController.ts
+src/modules/credits/presentation/routes.ts
+src/modules/essays/application/useCases/__tests__/GetEssayByIdUseCase.spec.ts
+src/modules/essays/application/useCases/GetEssayByIdUseCase.ts
+src/modules/essays/application/useCases/ListStudentEssaysUseCase.ts
+src/modules/essays/application/useCases/SubmitEssayUseCase.ts
+src/modules/essays/domain/entities/Essay.ts
+src/modules/essays/domain/errors/EssayNotFoundError.ts
+src/modules/essays/domain/services/WeeklyLimitService.ts
+src/modules/essays/domain/valueObjects/EssayStatus.ts
+src/modules/essays/dtos/EssayDetailsDTO.ts
+src/modules/essays/dtos/EssayListItemDTO.ts
+src/modules/essays/dtos/EssayResponseDTO.ts
+src/modules/essays/dtos/SubmitEssayDTO.ts
+src/modules/essays/infra/database/PrismaEssayRepository.ts
+src/modules/essays/infra/mappers/__tests__/EssayMapper.spec.ts
+src/modules/essays/infra/mappers/EssayMapper.ts
+src/modules/essays/infra/storage/LocalStorageService.ts
+src/modules/essays/infra/storage/S3StorageService.ts
+src/modules/essays/ports/EssayRepository.ts
+src/modules/essays/ports/StorageService.ts
+src/modules/essays/presentation/controllers/EssayController.ts
+src/modules/essays/presentation/index.ts
+src/modules/essays/presentation/middlewares/idempotency.middleware.ts
+src/modules/essays/presentation/middlewares/validateSubmitEssay.middleware.ts.ts
+src/modules/essays/presentation/routes.ts
+src/modules/health/application/CheckHealthUseCase.ts
+src/modules/health/presentation/controllers/HealthController.ts
+src/modules/health/presentation/routes.ts
+src/modules/shared/config/cors.ts
+src/modules/shared/config/env.ts
+src/modules/shared/config/helmet.ts
+src/modules/shared/config/logger.ts
+src/modules/shared/database/prismaClient.ts
+src/modules/shared/errors/AppError.ts
+src/modules/shared/errors/BusinessError.ts
+src/modules/shared/errors/ValidationError.ts
+src/modules/shared/http/middlewares/error.middleware.ts
+src/modules/shared/http/middlewares/rateLimit.middleware.ts
+src/modules/shared/http/middlewares/validation.middleware.ts
+src/modules/shared/http/response.ts
+src/modules/shared/transactions/PrismaTransactionManager.ts
+src/modules/shared/transactions/TransactionManager.ts
+src/modules/shared/utils/sanitize.ts
+src/modules/users/domain/entities/Student.ts
+src/modules/users/infra/database/PrismaStudentRepository.ts
+src/modules/users/ports/StudentRepository.ts
+src/routes/index.ts
+src/server.ts
+src/tests/e2e/submit-essay.e2e.spec.ts
+src/tests/integration/credits.routes.spec.ts
+src/tests/integration/essays.routes.spec.ts
+src/tests/unit/credits/AddCreditsUseCase.spec.ts
+src/tests/unit/essays/SubmitEssayUseCase.spec.ts
+storage/test-student-1-1769964679943.pdf
+TASK.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/modules/essays/domain/errors/EssayNotFoundError.ts">
+export class EssayNotFoundError extends Error {
+  constructor(essayId: string) {
+    super(`Essay with id ${essayId} not found`)
+    this.name = 'EssayNotFoundError'
+  }
+}
+</file>
+
+<file path=".env.exemple">
+# ===============================
+# Server
+# ===============================
+PORT=3000
+NODE_ENV=development
+
+# ===============================
+# Application
+# ===============================
+APP_NAME=redatando
+APP_VERSION=1.0.0
+
+# ===============================
+# Security
+# ===============================
+RATE_LIMIT_WINDOW_MINUTES=15
+RATE_LIMIT_MAX_REQUESTS=100
+
+# ===============================
+# CORS
+# ===============================
+CORS_ORIGIN=http://localhost:3000
+
+# ===============================
+# Logging
+# ===============================
+LOG_LEVEL=info
+
+# ===============================
+# Future use (do not use yet)
+# ===============================
+# JWT_SECRET=
+# JWT_EXPIRES_IN=
+</file>
+
+<file path="ARCHITECTURE.md">
+# 🏗️ ARCHITECTURE — REDATANDO (Backend)
+
+Este documento descreve a arquitetura do backend do sistema web de
+**correção de redações da Redatando**.
+
+A arquitetura foi projetada para crescer de forma incremental,
+seguindo rigorosamente o roadmap definido, mantendo segurança,
+clareza e padrão profissional desde o primeiro commit.
+
+---
+
+## 🎯 ESCOPO ATUAL
+
+Esta arquitetura cobre oficialmente:
+
+- 🧱 FASE 0 — Preparação
+- 🔐 FASE 1 — Segurança estrutural
+- 🧩 FASE 2 — Base da API (Contrato)
+
+Funcionalidades como banco de dados, upload de imagens e autenticação
+completa **não fazem parte deste documento ainda** e serão adicionadas
+nas próximas fases sem quebra estrutural.
+
+---
+
+## 🧱 VISÃO GERAL DA ARQUITETURA
+
+Fluxo padrão de uma requisição HTTP:
+
+Client
+↓
+Middlewares globais
+↓
+Controller
+↓
+Service
+↓
+Response padronizada
+
+
+Princípios:
+- Controllers não contêm regra de negócio
+- Services concentram a lógica da aplicação
+- Middlewares cuidam de segurança, validação e erros
+- A API sempre responde no mesmo formato
+
+---
+
+## 📦 ESTRUTURA DE PASTAS (ATUAL)
+
+redatando/
+├── src/
+│ ├── app.ts
+│ ├── server.ts
+│ │
+│ ├── config/
+│ │ ├── env.ts
+│ │ ├── cors.ts
+│ │ ├── helmet.ts
+│ │ └── logger.ts
+│ │
+│ ├── shared/
+│ │ ├── errors/
+│ │ │ └── AppError.ts
+│ │ │
+│ │ ├── middlewares/
+│ │ │ ├── error.middleware.ts
+│ │ │ ├── rateLimit.middleware.ts
+│ │ │ └── validation.middleware.ts
+│ │ │
+│ │ ├── http/
+│ │ │ └── response.ts
+│ │ │
+│ │ └── utils/
+│ │ └── sanitize.ts
+│ │
+│ ├── modules/
+│ │ ├── health/
+│ │ │ ├── HealthController.ts
+│ │ │ └── routes.ts
+│ │ │
+│ │ └── content/
+│ │ │  └── repositories/    --> feacture futura
+│ │ │  └── entities/        --> feacture futura
+│ │ │
+│ │ ├── controllers/
+│ │ │ └── ContentController.ts
+│ │ │
+│ │ ├── services/
+│ │ │ └── ContentService.ts
+│ │ │
+│ │ ├── dtos/
+│ │ │ └── CreateContentDTO.ts
+│ │ │
+│ │ └── routes.ts
+│ │
+│ └── routes/
+│ └── index.ts
+│
+├── tests/
+│ ├── unit/
+│ └── integration/
+│
+├── .env.example
+├── tsconfig.json
+├── jest.config.ts
+└── package.json
+
+
+---
+
+## 🧩 RESPONSABILIDADES DAS CAMADAS
+
+### `app.ts`
+- Inicializa o Express
+- Aplica middlewares globais
+- Registra as rotas
+
+---
+
+### `server.ts`
+- Responsável apenas por subir o servidor
+- Separado para facilitar testes automatizados
+
+---
+
+### `config/`
+Configurações isoladas da aplicação:
+- `env.ts` → carregamento e validação de variáveis de ambiente
+- `cors.ts` → política de CORS
+- `helmet.ts` → headers de segurança
+- `logger.ts` → logging básico
+
+---
+
+### `shared/errors`
+- Classe base `AppError`
+- Centraliza mensagens e status HTTP
+- Evita exposição de stack trace ao cliente
+
+---
+
+### `shared/middlewares`
+
+- `error.middleware.ts`
+  - Tratamento centralizado de erros
+- `rateLimit.middleware.ts`
+  - Proteção contra abuso de requisições
+- `validation.middleware.ts`
+  - Bloqueia payload inválido antes do controller
+
+---
+
+### `shared/http/response.ts`
+
+Todas as respostas da API seguem o mesmo padrão:
+
+```json
+{
+  "success": true,
+  "data": {},
+  "error": null
+}
+
+Ou, em caso de erro:
+
+{
+  "success": false,
+  "data": null,
+  "error": {
+    "message": "Mensagem clara para o cliente",
+    "code": "ERROR_CODE"
+  }
+}
+
+|---modules/
+
+
+Cada módulo representa um domínio isolado da aplicação.
+
+Regras:
+
+Um módulo não acessa diretamente outro módulo
+
+Toda lógica fica concentrada no service
+
+Controllers apenas orquestram a entrada e saída HTTP
+
+
+|---controllers/
+
+
+Recebem req e res
+
+Chamam os services
+
+Nunca contêm regra de negócio
+
+
+|---services/
+
+
+Implementam as regras da aplicação
+
+Orquestram fluxos
+
+Centralizam decisões
+
+
+|---dtos/
+
+
+Definem contratos de entrada
+
+Garantem validação e previsibilidade da API
+
+routes.ts
+
+Apenas mapeamento de rotas
+
+Nenhuma lógica de negócio
+
+
+🔐 SEGURANÇA (FASE 1)
+
+Segurança aplicada desde o início:
+
+Helmet para headers seguros
+
+CORS configurado
+
+Rate limit global
+
+Sanitização de input
+
+Middleware centralizado de erro
+
+Logger básico
+
+
+🧪 TESTES (ESTRUTURA PREPARADA)
+
+A estrutura já suporta:
+
+Testes unitários de services
+
+Testes de integração de rotas
+
+Evolução sem refatoração estrutural
+
+
+🚀 EVOLUÇÃO PLANEJADA
+
+Esta arquitetura evoluirá de forma incremental para suportar:
+
+Persistência em banco de dados (FASE 3)
+
+Upload e gestão de imagens (FASE 4)
+
+Autenticação e roles (FASE 6)
+
+Sem quebra de contratos nem retrabalho.
+
+
+✅ PRINCÍPIOS ADOTADOS
+
+Simplicidade acima de complexidade
+
+Segurança antes de feature
+
+Contrato de API como base
+
+Código explicável em entrevista
+
+Crescimento faseado e consciente
+</file>
+
+<file path="prisma/migrations/20260127014313_create_content/migration.sql">
+-- CreateTable
+CREATE TABLE "Content" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "text" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Content_pkey" PRIMARY KEY ("id")
+);
+</file>
+
+<file path="prisma/migrations/20260201152427_add_credit_transactions/migration.sql">
+-- CreateTable
+CREATE TABLE "CreditTransaction" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "description" TEXT,
+    "expiresAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "CreditTransaction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "CreditTransaction_userId_idx" ON "CreditTransaction"("userId");
+</file>
+
+<file path="prisma/migrations/20260201153641_add_essay_table/migration.sql">
+-- CreateTable
+CREATE TABLE "Essay" (
+    "id" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+    "theme" TEXT NOT NULL,
+    "fileUrl" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Essay_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "Essay_studentId_idx" ON "Essay"("studentId");
+</file>
+
+<file path="prisma/migrations/migration_lock.toml">
+# Please do not edit this file manually
+# It should be added in your version-control system (e.g., Git)
+provider = "postgresql"
+</file>
+
+<file path="src/@types/express/index.d.ts">
+import 'express'
+
+declare global {
+  namespace Express {
+    interface Request {
+      file?: {
+        fieldname: string
+        originalname: string
+        encoding: string
+        mimetype: string
+        size: number
+        buffer: Buffer
+      }
+    }
+  }
+}
+
+export {}
+</file>
+
+<file path="src/modules/credits/application/useCases/__tests__/CheckUserCreditsUseCase.spec.ts">
+import { CheckUserCreditsUseCase } from '../CheckUserCreditsUseCase'
+import { CreditPolicyService } from '../../../domain/services/CreditPolicyService'
+import { BusinessError } from '../../../../shared/errors/BusinessError'
+import { CreditRepository } from '../../../ports/CreditRepository'
+
+const mockCreditRepository = (): CreditRepository =>
+  ({
+    getUserCreditStatus: jest.fn(),
+  } as unknown as CreditRepository)
+
+describe('CheckUserCreditsUseCase', () => {
+  it('deve permitir quando créditos são válidos', async () => {
+    const repo = mockCreditRepository()
+    const service = new CreditPolicyService()
+    const useCase = new CheckUserCreditsUseCase(
+      repo,
+      service
+    )
+
+    ;(
+      repo.getUserCreditStatus as jest.Mock
+    ).mockResolvedValue({
+      availableCredits: 3,
+      creditExpirationDate: null,
+    })
+
+    const result = await useCase.execute({
+      userId: 'user-1',
+      planActive: true,
+    })
+
+    expect(result.allowed).toBe(true)
+  })
+
+  it('deve lançar erro quando saldo é insuficiente', async () => {
+    const repo = mockCreditRepository()
+    const service = new CreditPolicyService()
+    const useCase = new CheckUserCreditsUseCase(
+      repo,
+      service
+    )
+
+    ;(
+      repo.getUserCreditStatus as jest.Mock
+    ).mockResolvedValue({
+      availableCredits: 0,
+      creditExpirationDate: null,
+    })
+
+    await expect(
+      useCase.execute({
+        userId: 'user-1',
+        planActive: true,
+      })
+    ).rejects.toBeInstanceOf(BusinessError)
+  })
+})
+</file>
+
+<file path="src/modules/credits/application/useCases/AddCreditsUseCase.ts">
+
+</file>
+
+<file path="src/modules/credits/application/useCases/RemoveCreditsUseCase.ts">
+
+</file>
+
+<file path="src/modules/credits/application/useCases/ToggleInfiniteCreditsUseCase.ts">
+
+</file>
+
+<file path="src/modules/credits/domain/errors/CreditBlockedError.ts">
+import { CreditBlockReason } from '../services/CreditPolicyService'
+
+export class CreditBlockedError extends Error {
+  constructor(
+    public readonly reason: CreditBlockReason,
+    message: string
+  ) {
+    super(message)
+    this.name = 'CreditBlockedError'
+  }
+}
+</file>
+
+<file path="src/modules/credits/domain/services/__tests__/CreditPolicyService.spec.ts">
+import {
+  CreditPolicyService,
+  CreditBlockReason,
+} from '../CreditPolicyService'
+
+describe('CreditPolicyService', () => {
+  const service = new CreditPolicyService()
+
+  it('deve bloquear quando o plano está inativo', () => {
+    const result = service.evaluate({
+      availableCredits: 10,
+      creditExpirationDate: null,
+      planActive: false,
+    })
+
+    expect(result.allowed).toBe(false)
+    if (!result.allowed) {
+      expect(result.reason).toBe(
+        CreditBlockReason.PLAN_INACTIVE
+      )
+    }
+  })
+
+  it('deve bloquear quando créditos estão expirados', () => {
+    const result = service.evaluate({
+      availableCredits: 10,
+      creditExpirationDate: new Date('2020-01-01'),
+      planActive: true,
+    })
+
+    expect(result.allowed).toBe(false)
+    if (!result.allowed) {
+      expect(result.reason).toBe(
+        CreditBlockReason.CREDITS_EXPIRED
+      )
+    }
+  })
+
+  it('deve bloquear quando saldo é insuficiente', () => {
+    const result = service.evaluate({
+      availableCredits: 0,
+      creditExpirationDate: null,
+      planActive: true,
+    })
+
+    expect(result.allowed).toBe(false)
+    if (!result.allowed) {
+      expect(result.reason).toBe(
+        CreditBlockReason.INSUFFICIENT_CREDITS
+      )
+    }
+  })
+
+  it('deve permitir quando tudo está válido', () => {
+    const result = service.evaluate({
+      availableCredits: 5,
+      creditExpirationDate: null,
+      planActive: true,
+    })
+
+    expect(result.allowed).toBe(true)
+  })
+})
+</file>
+
+<file path="src/modules/credits/presentation/controllers/CreditAdminController.ts">
+
+</file>
+
+<file path="src/modules/credits/presentation/routes.ts">
+
+</file>
+
+<file path="src/modules/essays/application/useCases/__tests__/GetEssayByIdUseCase.spec.ts">
+import { GetEssayByIdUseCase } from '../GetEssayByIdUseCase'
+import { Essay } from '../../../domain/entities/Essay'
+import { EssayRepository } from '../../../ports/EssayRepository'
+import { EssayStatus } from '../../../domain/valueObjects/EssayStatus'
+import { BusinessError } from '../../../../shared/errors/BusinessError'
+
+class EssayRepositoryStub implements EssayRepository {
+  findById = jest.fn<Promise<Essay | null>, [string]>()
+
+  findByStudent = jest.fn<
+    Promise<{ items: Essay[]; total: number }>,
+    [{
+      studentId: string
+      page: number
+      limit: number
+      status?: EssayStatus
+    }]
+  >()
+
+  save = jest.fn<Promise<Essay>, [Essay]>()
+}
+
+const makeEssay = (studentId: string) =>
+  Essay.restore(
+    {
+      theme: 'Tema teste',
+      fileUrl: 'file.pdf',
+      studentId,
+    },
+    'essay-id-123',
+    EssayStatus.SUBMITTED,
+    new Date()
+  )
+
+
+describe('GetEssayByIdUseCase', () => {
+  let repository: EssayRepositoryStub
+  let useCase: GetEssayByIdUseCase
+
+  beforeEach(() => {
+    repository = new EssayRepositoryStub()
+    useCase = new GetEssayByIdUseCase(repository)
+  })
+
+  it('should return essay details when essay exists', async () => {
+    repository.findById.mockResolvedValue(makeEssay('student-id-1'))
+
+    const result = await useCase.execute({
+      essayId: 'essay-id-123',
+      studentId: 'student-id-1',
+    })
+
+    expect(result.id).toBe('essay-id-123')
+    expect(result.theme).toBe('Tema teste')
+  })
+
+  it('should throw BusinessError if essay does not exist', async () => {
+    repository.findById.mockResolvedValue(null)
+
+    await expect(
+      useCase.execute({
+        essayId: 'invalid-id',
+        studentId: 'student-id-1',
+      })
+    ).rejects.toBeInstanceOf(BusinessError)
+  })
+})
+</file>
+
+<file path="src/modules/essays/application/useCases/ListStudentEssaysUseCase.ts">
+import { EssayRepository } from '../../ports/EssayRepository'
+import { EssayStatus } from '../../domain/valueObjects/EssayStatus'
+import { EssayListItemDTO } from '../../dtos/EssayListItemDTO'
+
+type ListStudentEssaysInput = {
+  studentId: string
+  page: number
+  limit: number
+  status?: EssayStatus
+}
+
+type ListStudentEssaysOutput = {
+  total: number
+  items: EssayListItemDTO[]
+}
+
+export class ListStudentEssaysUseCase {
+  constructor(
+    private readonly essayRepository: EssayRepository
+  ) {}
+
+  async execute(
+    input: ListStudentEssaysInput
+  ): Promise<ListStudentEssaysOutput> {
+    const { studentId, page, limit, status } = input
+
+    const { items, total } =
+      await this.essayRepository.findByStudent({
+        studentId,
+        page,
+        limit,
+        status,
+      })
+
+    return {
+      total,
+      items: items.map((essay) => ({
+        id: essay.getIdOrThrow(),
+        theme: essay.getTheme(),
+        status: essay.getStatus(),
+        createdAt: essay.getCreatedAt(),
+      })),
+    }
+  }
+}
+</file>
+
+<file path="src/modules/essays/domain/services/WeeklyLimitService.ts">
+
+</file>
+
+<file path="src/modules/essays/dtos/EssayDetailsDTO.ts">
+import { EssayStatus } from '../domain/valueObjects/EssayStatus'
+
+export type EssayDetailsDTO = {
+  id: string
+  theme: string
+  status: EssayStatus
+  fileUrl: string
+  createdAt: Date
+}
+</file>
+
+<file path="src/modules/essays/dtos/EssayListItemDTO.ts">
+import { EssayStatus } from '../domain/valueObjects/EssayStatus'
+
+export type EssayListItemDTO = {
+  id: string
+  theme: string
+  status: EssayStatus
+  createdAt: Date
+}
+</file>
+
+<file path="src/modules/essays/infra/mappers/__tests__/EssayMapper.spec.ts">
+import { EssayMapper } from '../EssayMapper'
+import { Essay } from '../../../domain/entities/Essay'
+import { EssayStatus } from '../../../domain/valueObjects/EssayStatus'
+
+describe('EssayMapper', () => {
+  it('should map Essay entity to EssayDetailsDTO', () => {
+    const essay = Essay.restore(
+      {
+          theme: 'Tema ENEM',
+          fileUrl: 'https://file.url/essay.pdf',
+          studentId: ''
+      },
+      'essay-id-123',
+      EssayStatus.SUBMITTED,
+      new Date('2025-01-01')
+    )
+
+    const dto = EssayMapper.toDetailsDTO(essay)
+
+    expect(dto).toEqual({
+      id: 'essay-id-123',
+      theme: 'Tema ENEM',
+      status: EssayStatus.SUBMITTED,
+      fileUrl: 'https://file.url/essay.pdf',
+      createdAt: essay.getCreatedAt(),
+    })
+  })
+
+  it('should throw if essay has no id', () => {
+    const essay = Essay.create({
+        theme: 'Tema inválido',
+        fileUrl: 'file.pdf',
+        studentId: ''
+    })
+
+    expect(() => {
+      EssayMapper.toDetailsDTO(essay)
+    }).toThrow()
+  })
+})
+</file>
+
+<file path="src/modules/essays/infra/storage/S3StorageService.ts">
+
+</file>
+
+<file path="src/modules/essays/presentation/middlewares/idempotency.middleware.ts">
+
+</file>
+
+<file path="src/modules/essays/presentation/middlewares/validateSubmitEssay.middleware.ts.ts">
+import { Request, Response, NextFunction } from "express";
+import { AppError } from "../../../shared/errors/AppError";
+import { CreateContentDTO } from "../../dtos/SubmitEssayDTO";
+
+export function validateCreateContent(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const body = req.body as Partial<CreateContentDTO>;
+
+  if (!body.title || typeof body.title !== "string") {
+    throw new AppError("Title is required", 400, "VALIDATION_ERROR");
+  }
+
+  if (!body.text || typeof body.text !== "string") {
+    throw new AppError("Text is required", 400, "VALIDATION_ERROR");
+  }
+
+  next();
+}
+</file>
+
+<file path="src/modules/health/application/CheckHealthUseCase.ts">
+
+</file>
+
+<file path="src/modules/health/presentation/routes.ts">
+import { Router } from "express";
+import { HealthController } from "./controllers/HealthController";
+
+const router = Router();
+
+router.get("/health", HealthController.check);
+
+export default router;
+</file>
+
+<file path="src/modules/shared/config/cors.ts">
+
+</file>
+
+<file path="src/modules/shared/config/env.ts">
+import dotenv from "dotenv";
+
+dotenv.config();
+
+function required(key: string): string {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`❌ Environment variable ${key} is required`);
+  }
+  return value;
+}
+
+export const env = {
+  PORT: Number(process.env.PORT) || 3000,
+  NODE_ENV: process.env.NODE_ENV || "development",
+
+  APP_NAME: process.env.APP_NAME || "redatando",
+  APP_VERSION: process.env.APP_VERSION || "1.0.0",
+
+  RATE_LIMIT_WINDOW_MINUTES: Number(
+    process.env.RATE_LIMIT_WINDOW_MINUTES || 15
+  ),
+  RATE_LIMIT_MAX_REQUESTS: Number(
+    process.env.RATE_LIMIT_MAX_REQUESTS || 100
+  ),
+
+  CORS_ORIGIN: process.env.CORS_ORIGIN || "*",
+
+  LOG_LEVEL: process.env.LOG_LEVEL || "info"
+};
+</file>
+
+<file path="src/modules/shared/config/helmet.ts">
+
+</file>
+
+<file path="src/modules/shared/config/logger.ts">
+
+</file>
+
+<file path="src/modules/shared/errors/AppError.ts">
+export class AppError extends Error {
+  public readonly statusCode: number;
+  public readonly code: string;
+
+  constructor(
+    message: string,
+    statusCode: number = 400,
+    code: string = "APP_ERROR"
+  ) {
+    super(message);
+
+    this.statusCode = statusCode;
+    this.code = code;
+
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
+}
+</file>
+
+<file path="src/modules/shared/errors/ValidationError.ts">
+
+</file>
+
+<file path="src/modules/shared/http/middlewares/rateLimit.middleware.ts">
+import rateLimit from "express-rate-limit";
+import { env } from "../../config/env";
+
+export const rateLimitMiddleware = rateLimit({
+  windowMs: env.RATE_LIMIT_WINDOW_MINUTES * 60 * 1000,
+  max: env.RATE_LIMIT_MAX_REQUESTS,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    data: null,
+    error: {
+      message: "Too many requests, please try again later",
+      code: "RATE_LIMIT_EXCEEDED"
+    }
+  }
+});
+</file>
+
+<file path="src/modules/shared/http/middlewares/validation.middleware.ts">
+import { Request, Response, NextFunction } from "express";
+
+export function sanitizeMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (req.body && typeof req.body === "object") {
+    Object.keys(req.body).forEach((key) => {
+      if (typeof req.body[key] === "string") {
+        req.body[key] = req.body[key].trim();
+      }
+    });
+  }
+
+  next();
+}
+</file>
+
+<file path="src/modules/shared/http/response.ts">
+import { Response } from "express";
+
+interface ErrorPayload {
+  message: string;
+  code?: string;
+}
+
+export function successResponse<T>(
+  res: Response,
+  data: T,
+  statusCode = 200
+) {
+  return res.status(statusCode).json({
+    success: true,
+    data,
+    error: null
+  });
+}
+
+export function errorResponse(
+  res: Response,
+  error: ErrorPayload,
+  statusCode = 400
+) {
+  return res.status(statusCode).json({
+    success: false,
+    data: null,
+    error
+  });
+}
+</file>
+
+<file path="src/modules/shared/transactions/PrismaTransactionManager.ts">
+import { prisma } from '../database/prismaClient'
+import { TransactionManager } from './TransactionManager'
+
+export class PrismaTransactionManager implements TransactionManager {
+  async run<T>(callback: () => Promise<T>): Promise<T> {
+    return prisma.$transaction(async () => {
+      return callback()
+    })
+  }
+}
+</file>
+
+<file path="src/modules/shared/utils/sanitize.ts">
+
+</file>
+
+<file path="src/modules/users/domain/entities/Student.ts">
+
+</file>
+
+<file path="src/modules/users/infra/database/PrismaStudentRepository.ts">
+
+</file>
+
+<file path="src/modules/users/ports/StudentRepository.ts">
+
+</file>
+
+<file path="src/tests/e2e/submit-essay.e2e.spec.ts">
+describe('SubmitEssayUseCase', () => {
+  it('dummy test (placeholder)', () => {
+    expect(true).toBe(true)
+  })
+})
+</file>
+
+<file path="TASK.md">
+🔹 TASK 0 — Preparação mínima (já praticamente feita)
+
+
+📌 Objetivo: base estável
+
+Arquivos
+
+shared/errors/*.ts
+
+shared/transactions/TransactionManager.ts
+
+Repositórios Prisma (estrutura, mesmo vazios)
+
+Estado
+
+Use cases ainda vazios
+
+Projeto compila
+
+Testes rodam (mesmo falhando)
+
+✅ SEM TESTE obrigatório aqui
+(é setup)
+
+
+
+
+🔹 TASK 1 — Domínio de Créditos (isolado)
+
+
+📌 Objetivo: garantir regra de monetização
+
+Implementar
+
+credits/domain/entities/CreditTransaction.ts
+
+credits/domain/services/CreditPolicyService.ts
+
+Regra mínima
+
+crédito infinito
+
+saldo suficiente / insuficiente
+
+Teste obrigatório
+
+📄 tests/unit/credits/AddCreditsUseCase.spec.ts
+
+👉 Mesmo sem use case completo, você já testa o serviço de domínio.
+
+
+
+
+🔹 TASK 2 — Use case de créditos (admin)
+
+
+📌 Objetivo: entrada administrativa
+
+Implementar
+
+AddCreditsUseCase.ts
+
+RemoveCreditsUseCase.ts
+
+ToggleInfiniteCreditsUseCase.ts
+
+Teste obrigatório
+
+📄 tests/unit/credits/AddCreditsUseCase.spec.ts
+(agora completo, com mocks)
+
+👉 Se isso falhar, nada mais importa ainda.
+
+
+
+
+🔹 TASK 3 — Domínio de Redação (essays)
+
+
+📌 Objetivo: regra pura
+
+Implementar
+
+essays/domain/entities/Essay.ts
+
+essays/domain/valueObjects/EssayStatus.ts
+
+essays/domain/services/WeeklyLimitService.ts
+
+Teste obrigatório
+
+📄 tests/unit/essays/SubmitEssayUseCase.spec.ts
+(só testando limite semanal, sem infra)
+
+
+
+
+🔹 TASK 4 — Storage abstrato
+
+
+📌 Objetivo: não acoplar infra
+
+Implementar
+
+ports/StorageService.ts
+
+infra/storage/LocalStorageService.ts
+
+⚠️ Sem lógica de negócio aqui
+
+Teste obrigatório
+
+📄 Teste unitário simples do LocalStorage (opcional)
+(pode até pular no MVP)
+
+
+
+🔹 TASK 5 — SubmitEssayUseCase (núcleo do sistema)
+
+
+📌 Objetivo: coração do produto
+
+Implementar (ordem interna)
+
+Valida limite semanal
+
+Valida crédito
+
+Upload do PDF
+
+Transação:
+
+salvar redação
+
+debitar crédito
+
+Rollback compensatório se falhar
+
+Arquivos
+
+SubmitEssayUseCase.ts
+
+EssayRepository.ts
+
+StorageService.ts
+
+Teste obrigatório (CRÍTICO)
+
+📄 tests/unit/essays/SubmitEssayUseCase.spec.ts
+
+👉 Esse teste precisa cobrir:
+
+sucesso
+
+sem crédito
+
+limite semanal estourado
+
+falha no storage
+
+rollback funcionando
+
+
+
+🔹 TASK 6 — Controllers + Middlewares
+
+📌 Objetivo: entrada HTTP segura
+
+Implementar
+
+EssayController.ts
+
+validateSubmitEssay.middleware.ts
+
+idempotency.middleware.ts
+
+Teste obrigatório
+
+📄 tests/integration/essays.routes.spec.ts
+
+👉 Aqui você valida:
+
+status HTTP correto
+
+erro amigável
+
+duplicação bloqueada
+
+
+
+🔹 TASK 7 — Rotas + Health
+
+
+📌 Objetivo: API utilizável
+
+Implementar
+
+routes.ts
+
+routes/index.ts
+
+Health já existe (ok)
+
+Teste obrigatório
+
+📄 Health endpoint (simples)
+
+
+
+🔹 TASK 8 — Integração de Créditos
+
+
+📌 Objetivo: admin real
+
+Implementar
+
+CreditAdminController.ts
+
+rotas protegidas
+
+Teste obrigatório
+
+📄 tests/integration/credits.routes.spec.ts
+
+
+
+🔹 TASK 9 — Refinos finais
+
+
+📌 Objetivo: produto apresentável
+
+Mensagens de erro
+
+Logs
+
+DTO de resposta
+
+README técnico
+
+✅ Testes já cobrem tudo aqui
+</file>
+
+<file path=".gitignore">
+# Node
+node_modules/
+
+# Build
+dist/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+coverage/
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+/src/generated/prisma
+</file>
+
+<file path="jest.config.ts">
+import type { Config } from 'jest'
+
+const config: Config = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+
+  // 👇 Só onde existe teste real agora
+  roots: ['<rootDir>/src/modules', '<rootDir>/src/tests'], 
+
+  moduleFileExtensions: ['ts', 'js', 'json'],
+
+  testMatch: ['**/*.spec.ts'],
+
+  clearMocks: true,
+  collectCoverage: false,
+
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
+
+  setupFilesAfterEnv: [],
+}
+
+export default config
+</file>
+
+<file path="prisma.config.ts">
+import 'dotenv/config'
+import { defineConfig } from 'prisma/config'
+
+export default defineConfig({
+  datasource: {
+    url: process.env.DATABASE_URL!,
+  },
+})
+</file>
+
+<file path="prisma/schema.prisma">
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Content {
+  id        String   @id @default(uuid())
+  title     String
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CreditTransaction {
+  id          String   @id @default(uuid())
+  userId      String
+  type        String
+  amount      Int
+  description String?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Essay {
+  id        String   @id @default(uuid())
+  studentId String
+  theme     String
+  fileUrl   String
+  status    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId])
+}
+</file>
+
+<file path="src/modules/credits/application/useCases/CheckUserCreditsUseCase.ts">
+import { CreditPolicyService } from '../../domain/services/CreditPolicyService'
+import { CreditRepository } from '../../ports/CreditRepository'
+import { BusinessError } from '../../../shared/errors/BusinessError'
+
+type CheckUserCreditsInput = {
+  userId: string
+  planActive: boolean
+}
+
+type CheckUserCreditsOutput = {
+  allowed: true
+}
+
+export class CheckUserCreditsUseCase {
+  constructor(
+    private readonly creditRepository: CreditRepository,
+    private readonly creditPolicyService: CreditPolicyService
+  ) {}
+
+  async execute(
+    input: CheckUserCreditsInput
+  ): Promise<CheckUserCreditsOutput> {
+    const { userId, planActive } = input
+
+    const {
+  availableCredits,
+  creditExpirationDate,
+} = await this.creditRepository.getUserCreditStatus(userId)
+
+const policyResult = this.creditPolicyService.evaluate({
+  availableCredits,
+  creditExpirationDate,
+  planActive,
+})
+
+    if (!policyResult.allowed) {
+      throw new BusinessError(
+        policyResult.message,
+        policyResult.reason
+      )
+    }
+
+    return { allowed: true }
+  }
+}
+</file>
+
+<file path="src/modules/credits/domain/entities/CreditTransaction.ts">
+// src/modules/credits/domain/entities/CreditTransaction.ts
+
+export enum CreditTransactionType {
+  CREDIT = 'CREDIT', // adição de créditos
+  DEBIT = 'DEBIT',   // consumo de créditos
+}
+
+export type CreditTransactionProps = {
+  id?: string
+  userId: string
+  type: CreditTransactionType
+  amount: number
+  description?: string
+  createdAt?: Date
+  expiresAt?: Date | null
+}
+
+export class CreditTransaction {
+  private readonly id?: string
+  private readonly userId: string
+  private readonly type: CreditTransactionType
+  private readonly amount: number
+  private readonly description?: string
+  private readonly createdAt: Date
+  private readonly expiresAt?: Date | null
+
+  constructor(props: CreditTransactionProps) {
+    if (props.amount <= 0) {
+      throw new Error('Credit transaction amount must be greater than zero.')
+    }
+
+    this.id = props.id
+    this.userId = props.userId
+    this.type = props.type
+    this.amount = props.amount
+    this.description = props.description
+    this.createdAt = props.createdAt ?? new Date()
+    this.expiresAt = props.expiresAt ?? null
+  }
+
+  getId(): string | undefined {
+    return this.id
+  }
+
+  getUserId(): string {
+    return this.userId
+  }
+
+  getType(): CreditTransactionType {
+    return this.type
+  }
+
+  getAmount(): number {
+    return this.amount
+  }
+
+  getDescription(): string | undefined {
+    return this.description
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt
+  }
+
+  getExpiresAt(): Date | null {
+    return this.expiresAt ?? null
+  }
+
+  isExpired(referenceDate: Date = new Date()): boolean {
+    if (!this.expiresAt) return false
+
+    return this.expiresAt.getTime() < referenceDate.getTime()
+  }
+
+  isCredit(): boolean {
+    return this.type === CreditTransactionType.CREDIT
+  }
+
+  isDebit(): boolean {
+    return this.type === CreditTransactionType.DEBIT
+  }
+}
+</file>
+
+<file path="src/modules/essays/application/useCases/GetEssayByIdUseCase.ts">
+import { EssayRepository } from '../../ports/EssayRepository'
+import { BusinessError } from '../../../shared/errors/BusinessError'
+import { EssayMapper } from '../../infra/mappers/EssayMapper'
+
+interface GetEssayByIdInput {
+  essayId: string
+  studentId: string
+}
+
+export class GetEssayByIdUseCase {
+  constructor(
+    private readonly essayRepository: EssayRepository
+  ) {}
+
+  async execute({ essayId, studentId }: GetEssayByIdInput) {
+    const essay = await this.essayRepository.findById(essayId)
+
+    if (!essay) {
+      throw new BusinessError('Essay not found', 'NOT_FOUND')
+    }
+
+    if (essay.getStudentId() !== studentId) {
+      throw new BusinessError(
+        'You do not have access to this essay',
+        'FORBIDDEN'
+      )
+    }
+
+    return EssayMapper.toDetailsDTO(essay)
+  }
+}
+</file>
+
+<file path="src/modules/essays/application/useCases/SubmitEssayUseCase.ts">
+import { Essay } from '../../domain/entities/Essay'
+import { EssayRepository } from '../../ports/EssayRepository'
+import { StorageService } from '../../ports/StorageService'
+import { SubmitEssayDTO } from '../../dtos/SubmitEssayDTO'
+import { EssayResponseDTO } from '../../dtos/EssayResponseDTO'
+
+import { CheckUserCreditsUseCase } from '../../../credits/application/useCases/CheckUserCreditsUseCase'
+import { CreditRepository } from '../../../credits/ports/CreditRepository'
+import {
+  CreditTransactionType,
+} from '../../../credits/domain/entities/CreditTransaction'
+
+import { BusinessError } from '../../../shared/errors/BusinessError'
+import { TransactionManager } from '../../../shared/transactions/TransactionManager'
+
+export class SubmitEssayUseCase {
+  constructor(
+    private readonly essayRepository: EssayRepository,
+    private readonly storageService: StorageService,
+    private readonly creditRepository: CreditRepository,
+    private readonly checkUserCreditsUseCase: CheckUserCreditsUseCase,
+    private readonly transactionManager: TransactionManager
+  ) {}
+
+  async execute(input: SubmitEssayDTO): Promise<EssayResponseDTO> {
+    return this.transactionManager.run(async () => {
+      // 1️⃣ Valida créditos (regra de negócio)
+      await this.checkUserCreditsUseCase.execute({
+        userId: input.studentId,
+        planActive: true,
+      })
+
+      // 2️⃣ Persiste o arquivo
+      const storedFile = await this.storageService.store({
+        file: input.file,
+        filename: `${input.studentId}-${Date.now()}.pdf`,
+      })
+
+      // 3️⃣ Cria entidade Essay
+      const essay = Essay.create({
+        studentId: input.studentId,
+        theme: input.theme,
+        fileUrl: storedFile.url,
+      })
+
+      // 4️⃣ Salva redação
+      const savedEssay = await this.essayRepository.save(essay)
+
+      // 5️⃣ Debita 1 crédito
+      await this.creditRepository.create({
+        userId: input.studentId,
+        type: CreditTransactionType.DEBIT,
+        amount: 1,
+        description: 'Envio de redação',
+      })
+
+      return {
+        id: savedEssay.getId(),
+        theme: savedEssay.getTheme(),
+        status: savedEssay.getStatus(),
+        createdAt: savedEssay.getCreatedAt(),
+      }
+    })
+  }
+}
+</file>
+
+<file path="src/modules/essays/domain/valueObjects/EssayStatus.ts">
+export enum EssayStatus {
+  SUBMITTED = 'SUBMITTED',
+  IN_REVIEW = 'IN_REVIEW',
+  CORRECTED = 'CORRECTED',
+}
+</file>
+
+<file path="src/modules/essays/dtos/EssayResponseDTO.ts">
+import { EssayStatus } from '../domain/valueObjects/EssayStatus'
+
+export type EssayResponseDTO = {
+  id?: string
+  theme: string
+  status: EssayStatus
+  createdAt: Date
+}
+</file>
+
+<file path="src/modules/essays/dtos/SubmitEssayDTO.ts">
+export type SubmitEssayDTO = {
+  studentId: string
+  theme: string
+  file: Buffer
+}
+</file>
+
+<file path="src/modules/essays/infra/mappers/EssayMapper.ts">
+import { Essay } from '../../domain/entities/Essay'
+import { EssayDetailsDTO } from '../../dtos/EssayDetailsDTO'
+
+export class EssayMapper {
+  static toDetailsDTO(essay: Essay): EssayDetailsDTO {
+    return {
+      id: essay.getIdOrThrow(),
+      theme: essay.getTheme(),
+      status: essay.getStatus(),
+      fileUrl: essay.getFileUrl(),
+      createdAt: essay.getCreatedAt(),
+    }
+  }
+}
+</file>
+
+<file path="src/modules/essays/infra/storage/LocalStorageService.ts">
+import { StorageService, StoreFileInput, StoredFile } from '../../ports/StorageService'
+import fs from 'fs'
+import path from 'path'
+
+export class LocalStorageService implements StorageService {
+  private readonly basePath: string
+
+  constructor() {
+    this.basePath = path.resolve(process.cwd(), 'storage')
+
+    if (!fs.existsSync(this.basePath)) {
+      fs.mkdirSync(this.basePath, { recursive: true })
+    }
+  }
+
+  async store(input: StoreFileInput): Promise<StoredFile> {
+    const filePath = path.join(this.basePath, input.filename)
+
+    await fs.promises.writeFile(filePath, input.file)
+
+    return {
+      url: `/storage/${input.filename}`,
+    }
+  }
+}
+</file>
+
+<file path="src/modules/essays/ports/StorageService.ts">
+export type StoreFileInput = {
+  file: Buffer
+  filename: string
+}
+
+export type StoredFile = {
+  url: string
+}
+
+export interface StorageService {
+  store(input: StoreFileInput): Promise<StoredFile>
+}
+</file>
+
+<file path="src/modules/essays/presentation/index.ts">
+import { PrismaEssayRepository } from '../infra/database/PrismaEssayRepository'
+import { LocalStorageService } from '../infra/storage/LocalStorageService'
+import { EssayController } from './controllers/EssayController'
+
+import { SubmitEssayUseCase } from '../application/useCases/SubmitEssayUseCase'
+import { GetEssayByIdUseCase } from '../application/useCases/GetEssayByIdUseCase'
+
+import { PrismaCreditRepository } from '../../credits/infra/database/PrismaCreditRepository'
+import { CreditPolicyService } from '../../credits/domain/services/CreditPolicyService'
+import { CheckUserCreditsUseCase } from '../../credits/application/useCases/CheckUserCreditsUseCase'
+
+import { PrismaTransactionManager } from '../../shared/transactions/PrismaTransactionManager'
+
+import { createEssayRoutes } from './routes'
+
+export function buildEssayModule() {
+  // ======================
+  // Infra
+  // ======================
+  const essayRepository = new PrismaEssayRepository()
+  const storageService = new LocalStorageService()
+  const creditRepository = new PrismaCreditRepository()
+  const transactionManager = new PrismaTransactionManager()
+
+  // ======================
+  // Domain / Services
+  // ======================
+  const creditPolicyService = new CreditPolicyService()
+
+  // ======================
+  // Application / UseCases
+  // ======================
+  const checkUserCreditsUseCase = new CheckUserCreditsUseCase(
+    creditRepository,
+    creditPolicyService
+  )
+
+  const submitEssayUseCase = new SubmitEssayUseCase(
+    essayRepository,
+    storageService,
+    creditRepository,
+    checkUserCreditsUseCase,
+    transactionManager
+  )
+
+  const getEssayByIdUseCase = new GetEssayByIdUseCase(
+    essayRepository
+  )
+
+  // ======================
+  // Controller
+  // ======================
+  const essayController = new EssayController(
+    submitEssayUseCase,
+    getEssayByIdUseCase
+  )
+
+  // ======================
+  // Routes
+  // ======================
+  const routes = createEssayRoutes(essayController)
+
+  return {
+    routes,
+  }
+}
+</file>
+
+<file path="src/modules/health/presentation/controllers/HealthController.ts">
+import { Request, Response } from "express";
+import { successResponse } from "../../../shared/http/response";
+
+export class HealthController {
+  static check(req: Request, res: Response) {
+    return successResponse(res, {
+      status: "ok",
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    });
+  }
+}
+</file>
+
+<file path="src/modules/shared/database/prismaClient.ts">
+import { PrismaClient } from '../../../generated/prisma'
+import { PrismaPg } from '@prisma/adapter-pg'
+import 'dotenv/config'
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
+})
+
+export const prisma = new PrismaClient({
+  adapter,
+})
+</file>
+
+<file path="src/modules/shared/http/middlewares/error.middleware.ts">
+import { Request, Response, NextFunction } from 'express'
+import { BusinessError } from '../../errors/BusinessError'
+
+export function errorMiddleware(
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Response {
+  // 🔴 BusinessError (regra de negócio)
+  if (error instanceof BusinessError) {
+    const statusMap: Record<string, number> = {
+      FORBIDDEN: 403,
+      NOT_FOUND: 404,
+      BAD_REQUEST: 400,
+    }
+
+    const status =
+      (error.code && statusMap[error.code]) || 400
+
+    return res.status(status).json({
+      message: error.message,
+      code: error.code,
+    })
+  }
+
+  // 🔥 Erro inesperado
+  console.error(error)
+
+  return res.status(500).json({
+    message: 'Internal server error',
+  })
+}
+</file>
+
+<file path="src/modules/shared/transactions/TransactionManager.ts">
+export interface TransactionManager {
+  run<T>(callback: () => Promise<T>): Promise<T>
+}
+</file>
+
+<file path="src/tests/integration/credits.routes.spec.ts">
+describe('SubmitEssayUseCase', () => {
+  it('dummy test (placeholder)', () => {
+    expect(true).toBe(true)
+  })
+})
+</file>
+
+<file path="src/tests/integration/essays.routes.spec.ts">
+import request from 'supertest'
+import app from '../../app'
+import { prisma } from '../../modules/shared/database/prismaClient'
+import { EssayStatus } from '../../modules/essays/domain/valueObjects/EssayStatus'
+
+describe('Essays Routes (integration)', () => {
+  const studentId = 'student-id-1'
+  const essayId = 'essay-id-123'
+
+  beforeAll(async () => {
+    await prisma.essay.deleteMany()
+
+    await prisma.essay.create({
+      data: {
+        id: essayId,
+        studentId,
+        theme: 'Tema integração',
+        fileUrl: 'file.pdf',
+        status: EssayStatus.SUBMITTED,
+      },
+    })
+  })
+
+  afterAll(async () => {
+    await prisma.essay.deleteMany()
+    await prisma.$disconnect()
+  })
+
+  it('GET /api/essays/:id should return essay details', async () => {
+    const response = await request(app)
+      .get(`/api/essays/${essayId}`)
+      .query({ studentId })
+
+    expect(response.status).toBe(200)
+    expect(response.body).toEqual({
+      id: essayId,
+      theme: 'Tema integração',
+      status: EssayStatus.SUBMITTED,
+      fileUrl: 'file.pdf',
+      createdAt: expect.any(String),
+    })
+  })
+
+  it('GET /api/essays/:id should return 403 if essay does not belong to student', async () => {
+    const response = await request(app)
+      .get(`/api/essays/${essayId}`)
+      .query({ studentId: 'other-student' })
+
+    expect(response.status).toBe(403)
+  })
+
+  it('GET /api/essays/:id should return 404 if essay does not exist', async () => {
+    const response = await request(app)
+      .get('/api/essays/non-existing-id')
+      .query({ studentId })
+
+    expect(response.status).toBe(404)
+  })
+})
+</file>
+
+<file path="src/tests/unit/credits/AddCreditsUseCase.spec.ts">
+describe('SubmitEssayUseCase', () => {
+  it('dummy test (placeholder)', () => {
+    expect(true).toBe(true)
+  })
+})
+</file>
+
+<file path="src/tests/unit/essays/SubmitEssayUseCase.spec.ts">
+describe('SubmitEssayUseCase', () => {
+  it('dummy test (placeholder)', () => {
+    expect(true).toBe(true)
+  })
+})
+</file>
+
+<file path="src/modules/credits/domain/services/CreditPolicyService.ts">
+// src/modules/credits/domain/services/CreditPolicyService.ts
+
+export enum CreditBlockReason {
+  INSUFFICIENT_CREDITS = 'INSUFFICIENT_CREDITS',
+  CREDITS_EXPIRED = 'CREDITS_EXPIRED',
+  PLAN_INACTIVE = 'PLAN_INACTIVE',
+}
+
+export type CreditPolicyInput = {
+  availableCredits: number
+  creditExpirationDate: Date | null
+  planActive: boolean
+}
+
+export type CreditPolicyResult =
+  | {
+      allowed: true
+      message: string
+    }
+  | {
+      allowed: false
+      reason: CreditBlockReason
+      message: string
+    }
+
+export class CreditPolicyService {
+  private static readonly CREDITS_REQUIRED_PER_ESSAY = 1
+
+  evaluate(input: CreditPolicyInput): CreditPolicyResult {
+    const {
+      availableCredits,
+      creditExpirationDate,
+      planActive,
+    } = input
+
+    // 1️⃣ Plano inativo
+    if (!planActive) {
+      return {
+        allowed: false,
+        reason: CreditBlockReason.PLAN_INACTIVE,
+        message:
+          'Seu plano está inativo. Regularize ou realize um upgrade para continuar.',
+      }
+    }
+
+    // 2️⃣ Créditos expirados
+    if (
+      creditExpirationDate &&
+      creditExpirationDate.getTime() < Date.now()
+    ) {
+      return {
+        allowed: false,
+        reason: CreditBlockReason.CREDITS_EXPIRED,
+        message:
+          'Seus créditos expiraram. Faça um upgrade de plano para continuar.',
+      }
+    }
+
+    // 3️⃣ Saldo insuficiente
+    if (
+      availableCredits <
+      CreditPolicyService.CREDITS_REQUIRED_PER_ESSAY
+    ) {
+      return {
+        allowed: false,
+        reason: CreditBlockReason.INSUFFICIENT_CREDITS,
+        message:
+          'Você não possui créditos suficientes para enviar uma redação.',
+      }
+    }
+
+    // ✅ Tudo ok
+    return {
+      allowed: true,
+      message:
+        'Crédito validado com sucesso. Envio de redação liberado.',
+    }
+  }
+}
+</file>
+
+<file path="src/modules/credits/infra/database/PrismaCreditRepository.ts">
+import { prisma } from '../../../shared/database/prismaClient'
+import {
+  CreditRepository,
+  CreateCreditTransactionParams,
+} from '../../ports/CreditRepository'
+import {
+  CreditTransaction,
+  CreditTransactionType,
+} from '../../domain/entities/CreditTransaction'
+
+export class PrismaCreditRepository implements CreditRepository {
+  async findByUserId(userId: string): Promise<CreditTransaction[]> {
+    const transactions = await prisma.creditTransaction.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'asc' },
+    })
+
+    return transactions.map(
+      (tx) =>
+        new CreditTransaction({
+          id: tx.id,
+          userId: tx.userId,
+          type: tx.type as CreditTransactionType,
+          amount: tx.amount,
+          description: tx.description ?? undefined,
+          createdAt: tx.createdAt,
+          expiresAt: tx.expiresAt,
+        })
+    )
+  }
+
+  async create(
+    params: CreateCreditTransactionParams
+  ): Promise<CreditTransaction> {
+    const transaction = await prisma.creditTransaction.create({
+      data: {
+        userId: params.userId,
+        type: params.type,
+        amount: params.amount,
+        description: params.description,
+        expiresAt: params.expiresAt ?? null,
+      },
+    })
+
+    return new CreditTransaction({
+      id: transaction.id,
+      userId: transaction.userId,
+      type: transaction.type as CreditTransactionType,
+      amount: transaction.amount,
+      description: transaction.description ?? undefined,
+      createdAt: transaction.createdAt,
+      expiresAt: transaction.expiresAt,
+    })
+  }
+
+  async getAvailableBalance(userId: string): Promise<number> {
+    const transactions = await prisma.creditTransaction.findMany({
+      where: {
+        userId,
+        OR: [
+          { expiresAt: null },
+          { expiresAt: { gt: new Date() } },
+        ],
+      },
+    })
+
+    return transactions.reduce((balance, tx) => {
+      if (tx.type === CreditTransactionType.CREDIT) {
+        return balance + tx.amount
+      }
+      if (tx.type === CreditTransactionType.DEBIT) {
+        return balance - tx.amount
+      }
+      return balance
+    }, 0)
+  }
+
+  async getUserCreditStatus(userId: string): Promise<{
+    availableCredits: number
+    creditExpirationDate: Date | null
+  }> {
+    const transactions = await prisma.creditTransaction.findMany({
+      where: { userId },
+    })
+
+    const validTransactions = transactions.filter(
+      (tx) => !tx.expiresAt || tx.expiresAt > new Date()
+    )
+
+    const availableCredits = validTransactions.reduce(
+      (balance, tx) => {
+        if (tx.type === CreditTransactionType.CREDIT) {
+          return balance + tx.amount
+        }
+        if (tx.type === CreditTransactionType.DEBIT) {
+          return balance - tx.amount
+        }
+        return balance
+      },
+      0
+    )
+
+    const creditExpirationDate =
+      validTransactions
+        .filter((tx) => tx.expiresAt !== null)
+        .sort(
+          (a, b) =>
+            a.expiresAt!.getTime() - b.expiresAt!.getTime()
+        )[0]?.expiresAt ?? null
+
+    return {
+      availableCredits,
+      creditExpirationDate,
+    }
+  }
+
+  async invalidateExpiredCredits(): Promise<void> {
+    await prisma.creditTransaction.updateMany({
+      where: {
+        expiresAt: { lt: new Date() },
+      },
+      data: {
+        amount: 0,
+      },
+    })
+  }
+}
+</file>
+
+<file path="src/modules/credits/ports/CreditRepository.ts">
+// src/modules/credits/ports/CreditRepository.ts
+
+import {
+  CreditTransaction,
+  CreditTransactionType,
+} from '../domain/entities/CreditTransaction'
+
+export type CreateCreditTransactionParams = {
+  userId: string
+  type: CreditTransactionType
+  amount: number
+  description?: string
+  expiresAt?: Date | null
+}
+
+export interface CreditRepository {
+  findByUserId(userId: string): Promise<CreditTransaction[]>
+
+  create(
+    params: CreateCreditTransactionParams
+  ): Promise<CreditTransaction>
+
+  getAvailableBalance(userId: string): Promise<number>
+
+  invalidateExpiredCredits(): Promise<void>
+
+  // 👇 NECESSÁRIO PARA A POLICY
+  getUserCreditStatus(userId: string): Promise<{
+    availableCredits: number
+    creditExpirationDate: Date | null
+  }>
+}
+</file>
+
+<file path="src/modules/essays/domain/entities/Essay.ts">
+import { EssayStatus } from '../valueObjects/EssayStatus'
+
+type EssayProps = {
+  studentId: string
+  theme: string
+  fileUrl: string
+}
+
+export class Essay {
+  private id?: string
+  private readonly studentId: string
+  private readonly theme: string
+  private readonly fileUrl: string
+  private status: EssayStatus
+  private readonly createdAt: Date
+
+  private constructor(
+    props: EssayProps,
+    id?: string,
+    createdAt?: Date
+  ) {
+    this.id = id
+    this.studentId = props.studentId
+    this.theme = props.theme
+    this.fileUrl = props.fileUrl
+    this.status = EssayStatus.SUBMITTED
+    this.createdAt = createdAt ?? new Date()
+  }
+
+  /**
+   * Criação de uma nova redação (antes de persistir)
+   */
+  static create(props: EssayProps): Essay {
+    return new Essay(props)
+  }
+
+  /**
+   * Reconstituição de uma redação já persistida
+   */
+  static restore(
+    props: EssayProps,
+    id: string,
+    status: EssayStatus,
+    createdAt: Date
+  ): Essay {
+    const essay = new Essay(props, id, createdAt)
+    essay.status = status
+    return essay
+  }
+
+  /**
+   * ID pode ser indefinido antes da persistência
+   */
+  getId(): string | undefined {
+    return this.id
+  }
+
+  /**
+   * ID garantido (somente após persistência)
+   */
+  getIdOrThrow(): string {
+    if (!this.id) {
+      throw new Error('Essay ID not defined')
+    }
+
+    return this.id
+  }
+
+  getTheme(): string {
+    return this.theme
+  }
+
+  getStatus(): EssayStatus {
+    return this.status
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt
+  }
+
+  getStudentId(): string {
+    return this.studentId
+  }
+
+  getFileUrl(): string {
+    return this.fileUrl
+  }
+}
+</file>
+
+<file path="src/modules/essays/infra/database/PrismaEssayRepository.ts">
+import { prisma } from '../../../shared/database/prismaClient'
+import { Essay } from '../../domain/entities/Essay'
+import { EssayRepository } from '../../ports/EssayRepository'
+import { EssayStatus } from '../../domain/valueObjects/EssayStatus'
+
+export class PrismaEssayRepository implements EssayRepository {
+  async save(essay: Essay): Promise<Essay> {
+    const created = await prisma.essay.create({
+      data: {
+        studentId: essay.getStudentId(),
+        theme: essay.getTheme(),
+        fileUrl: essay.getFileUrl(),
+        status: EssayStatus.SUBMITTED,
+      },
+    })
+
+    return Essay.restore(
+      {
+        theme: created.theme,
+        fileUrl: created.fileUrl,
+        studentId: created.studentId,
+      },
+      created.id,
+      created.status as EssayStatus,
+      created.createdAt
+    )
+  }
+
+  async findById(id: string): Promise<Essay | null> {
+    const found = await prisma.essay.findUnique({
+      where: { id },
+    })
+
+    if (!found) {
+      return null
+    }
+
+    return Essay.restore(
+      {
+        theme: found.theme,
+        fileUrl: found.fileUrl,
+        studentId: found.studentId,
+      },
+      found.id,
+      found.status as EssayStatus,
+      found.createdAt
+    )
+  }
+
+  async findByStudent(params: {
+    studentId: string
+    page: number
+    limit: number
+    status?: EssayStatus
+  }): Promise<{ items: Essay[]; total: number }> {
+    const { studentId, page, limit, status } = params
+
+    const where = {
+      studentId,
+      ...(status && { status }),
+    }
+
+    const [items, total] = await Promise.all([
+      prisma.essay.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.essay.count({ where }),
+    ])
+
+    return {
+      items: items.map((essay) =>
+        Essay.restore(
+          {
+            theme: essay.theme,
+            fileUrl: essay.fileUrl,
+            studentId: essay.studentId,
+          },
+          essay.id,
+          essay.status as EssayStatus,
+          essay.createdAt
+        )
+      ),
+      total,
+    }
+  }
+}
+</file>
+
+<file path="src/modules/essays/ports/EssayRepository.ts">
+import { Essay } from '../domain/entities/Essay'
+import { EssayStatus } from '../domain/valueObjects/EssayStatus'
+
+export interface EssayRepository {
+  /**
+   * Persiste uma nova redação
+   */
+  save(essay: Essay): Promise<Essay>
+
+  /**
+   * Busca uma redação específica pelo ID
+   */
+  findById(id: string): Promise<Essay | null>
+
+  /**
+   * Lista redações de um aluno com paginação e filtro opcional
+   */
+  findByStudent(params: {
+    studentId: string
+    page: number
+    limit: number
+    status?: EssayStatus
+  }): Promise<{
+    items: Essay[]
+    total: number
+  }>
+}
+</file>
+
+<file path="src/modules/essays/presentation/controllers/EssayController.ts">
+import { Request, Response, NextFunction } from 'express'
+import { SubmitEssayUseCase } from '../../application/useCases/SubmitEssayUseCase'
+import { GetEssayByIdUseCase } from '../../application/useCases/GetEssayByIdUseCase'
+
+export class EssayController {
+  constructor(
+    private readonly submitEssayUseCase: SubmitEssayUseCase,
+    private readonly getEssayByIdUseCase: GetEssayByIdUseCase
+  ) {}
+
+  async submit(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    try {
+      const { studentId, theme } = req.body
+      const file = req.file
+
+      if (!file) {
+        return res.status(400).json({
+          message: 'Arquivo da redação é obrigatório.',
+        })
+      }
+
+      const result = await this.submitEssayUseCase.execute({
+        studentId,
+        theme,
+        file: file.buffer,
+      })
+
+      return res.status(201).json(result)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getById(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> {
+  try {
+    const essayId = req.params.id
+    const studentId = req.query.studentId as string
+
+    const result = await this.getEssayByIdUseCase.execute({
+      essayId,
+      studentId,
+    })
+
+    return res.status(200).json(result)
+  } catch (error) {
+    next(error)
+    }
+  }
+
+}
+</file>
+
+<file path="src/modules/essays/presentation/routes.ts">
+import { Router } from 'express'
+import multer from 'multer'
+import { EssayController } from './controllers/EssayController'
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+})
+
+export function createEssayRoutes(
+  essayController: EssayController
+): Router {
+  const routes = Router()
+
+  routes.post(
+    '/essays',
+    upload.single('file'),
+    (req, res, next) => essayController.submit(req, res, next)
+  )
+
+  routes.get(
+    '/essays/:id',
+    (req, res, next) => essayController.getById(req, res, next)
+  )
+
+  return routes
+}
+</file>
+
+<file path="src/modules/shared/errors/BusinessError.ts">
+export class BusinessError extends Error {
+  public readonly code?: string
+
+  constructor(message: string, code: string) {
+    super(message)
+    this.name = 'BusinessError'
+    this.code = code
+
+    Object.setPrototypeOf(this, BusinessError.prototype)
+  }
+}
+</file>
+
+<file path="estrutura.txt">
+src/
+└── main/
+    ├── app.ts
+    ├── server.ts
+    ├── routes.ts
+
+└── modules/
+    ├── essays/                         # núcleo do produto
+    │   ├── presentation/
+    │   │   ├── controllers/
+    │   │   │   └── EssayController.ts
+    │   │   ├── middlewares/
+    │   │   │   ├── validateSubmitEssay.middleware.ts
+    │   │   │   └── idempotency.middleware.ts
+    │   │   ├── routes.ts
+    │   |   └── index.ts 
+    |
+    │   ├── application/
+    │   │   └── useCases/
+    │   │       ├── SubmitEssayUseCase.ts
+    │   │       ├── ListEssaysUseCase.ts
+    │   │       └── GetEssayByIdUseCase.ts
+    │
+    │   ├── dtos/
+    │   │   ├── SubmitEssayDTO.ts
+    │   │   └── EssayResponseDTO.ts
+    │
+    │   ├── ports/
+    │   │   ├── EssayRepository.ts
+    │   │   └── StorageService.ts
+    │
+    │   ├── domain/
+    │   │   ├── entities/
+    │   │   │   └── Essay.ts
+    │   │   ├── services/
+    │   │   │   └── WeeklyLimitService.ts
+    │   │   └── valueObjects/
+    │   │       └── EssayStatus.ts
+    │
+    │   └── infra/
+    │       ├── database/
+    │       │   └── PrismaEssayRepository.ts
+    │       ├── storage/
+    │       │   ├── LocalStorageService.ts
+    │       │   └── S3StorageService.ts       # futuro
+    │       └── mappers/
+    │           └── EssayMapper.ts
+    │
+    ├── credits/                        # NOVO: regra de negócio
+    │   ├── presentation/
+    │   │   ├── controllers/
+    │   │   │   └── CreditAdminController.ts
+    │   │   └── routes.ts
+    │
+    │   ├── application/    
+    │   │   └── useCases/
+    │   │       ├── AddCreditsUseCase.ts
+    │   │       ├── RemoveCreditsUseCase.ts
+    │   │       ├── ToggleInfiniteCreditsUseCase.ts
+    │   |       └── CheckUserCreditsUseCase.ts
+    |
+    │   ├── domain/
+    │   │   ├── entities/
+    │   │   │   └── CreditTransaction.ts
+    │   │   ├── services/
+    │   │   |   └── CreditPolicyService.ts
+    |   |   └── errors
+    │   |       └── CreditBlockedError.ts
+    |
+    │   ├── ports/
+    │   │   └── CreditRepository.ts
+    │
+    │   └── infra/
+    │       └── database/
+    │           └── PrismaCreditRepository.ts
+    │
+    ├── users/
+    │   ├── domain/
+    │   │   └── entities/
+    │   │       └── Student.ts
+    │   ├── ports/
+    │   │   └── StudentRepository.ts
+    │   └── infra/
+    │       └── database/
+    │           └── PrismaStudentRepository.ts
+    │
+    ├── health/
+    │   ├── presentation/
+    │   │   └── controllers/
+    │   │       └── HealthController.ts
+    │   ├── application/
+    │   │   └── CheckHealthUseCase.ts
+    │   └── routes.ts
+    │
+    ├── auth/                           # futuro (JWT, roles)
+    │
+    └── shared/
+        ├── config/
+        │   ├── env.ts
+        │   ├── cors.ts
+        │   ├── helmet.ts
+        │   └── logger.ts
+        │
+        ├── database/
+        │   └── prismaClient.ts         # transações centralizadas
+        │
+        ├── errors/
+        │   ├── AppError.ts
+        │   ├── BusinessError.ts
+        │   └── ValidationError.ts
+        │
+        ├── http/
+        │   ├── response.ts
+        │   └── middlewares/
+        │       ├── error.middleware.ts
+        │       ├── rateLimit.middleware.ts
+        │       └── validation.middleware.ts
+        │
+        ├── transactions/
+        │   └── TransactionManager.ts   # abstração de $transaction
+        |   └── PrismaTransactionManager.ts
+        │
+        └── utils/
+            └── sanitize.ts
+
+└── routes/
+    └── index.ts
+
+└── tests/
+    ├── unit/
+    │   ├── essays/
+    │   │   └── SubmitEssayUseCase.spec.ts
+    │   └── credits/
+    │       └── AddCreditsUseCase.spec.ts
+    │
+    └── integration/
+        ├── essays.routes.spec.ts
+        └── credits.routes.spec.ts
+
+└── index.ts
+</file>
+
+<file path="package.json">
+{
+  "name": "redatando",
+  "version": "1.0.0",
+  "description": "Backend do sistema web de correção de redações da Redatando",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.0",
+    "git": "^0.1.5",
+    "helmet": "^7.1.0",
+    "multer": "^2.0.2",
+    "pg": "^8.17.2",
+    "supertest": "^7.2.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^20.19.30",
+    "@types/supertest": "^6.0.3",
+    "jest": "^29.7.0",
+    "prisma": "^7.3.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  }
+}
+</file>
+
+<file path="ROADMAP.md">
+# 🗺️ ROADMAP DO BACKEND — REDATANDO
+
+Este roadmap descreve a evolução do **backend do sistema web de correção de redações da Redatando**.  
+Ele reflete o **estado real atual do projeto**, alinhado a uma **Clean Architecture pragmática**, focada em regras de negócio, segurança e escalabilidade.
+
+---
+
+## 🧱 FASE 0 — Preparação (Base do Projeto) ✅ CONCLUÍDA
+
+🎯 **Objetivo**  
+Garantir que o backend suba sem erro e siga um padrão profissional desde o início.
+
+### Atividades
+- [x] Inicializar projeto Node.js + TypeScript
+- [x] Configurar `tsconfig.json` (Node16 + resolução correta)
+- [x] Criar `.env` e `.env.example`
+- [x] Criar estrutura inicial de pastas (`modules`, `shared`, `routes`)
+- [x] Configurar scripts (`dev`, `build`, `start`)
+- [x] Criar endpoint de health check (`/health`)
+
+### Critério de pronto
+- [x] `npm run dev` sobe sem erros
+- [x] Endpoint `/health` responde `200 OK`
+
+---
+
+## 🔐 FASE 1 — Segurança Estrutural ✅ CONCLUÍDA
+**(ANTES de qualquer feature de negócio)**
+
+🎯 **Objetivo**  
+Blindar o backend contra erros comuns e falhas básicas de segurança desde o dia 1.
+
+### Atividades
+- [x] Configurar Helmet (headers seguros)
+- [x] Configurar CORS
+- [x] Rate limit global
+- [x] Middleware de erro centralizado
+- [x] Logger básico
+- [x] Sanitização de input
+
+### Critério de pronto
+- [x] Erros tratados em um único lugar
+- [x] Nenhuma rota expõe stack trace
+- [x] Rate limit ativo e funcional
+
+---
+
+## 🧩 FASE 2 — Base da API (Contrato HTTP) ✅ CONCLUÍDA
+
+🎯 **Objetivo**  
+Definir claramente como o frontend se comunica com o backend.
+
+### Atividades
+- [x] Estrutura base de rotas
+- [x] Controllers padronizados
+- [x] DTOs
+- [x] Middleware de validação de payload
+- [x] Padrão único de resposta (`success / error`)
+
+### Critério de pronto
+- [x] API responde sempre no mesmo formato
+- [x] Payload inválido é bloqueado antes do controller
+
+---
+
+## 🗄️ FASE 3 — Banco de Dados & Persistência ✅ CONCLUÍDA
+
+🎯 **Objetivo**  
+Persistir dados reais sem acoplamento com a camada HTTP.
+
+### Atividades
+- [x] Escolha do ORM (Prisma)
+- [x] Conexão com PostgreSQL
+- [x] Sistema de migrations
+- [x] Repositories desacoplados
+- [x] Prisma Client configurado corretamente (v7)
+- [x] Schemas iniciais:
+  - [x] `Essay`
+  - [x] `Content`
+  - [x] `CreditTransaction`
+
+### Critério de pronto
+- [x] CRUD funcional
+- [x] Migrations versionadas
+- [x] Banco acessado apenas via repositories
+
+---
+
+## 💳 FASE 4 — Sistema de Créditos (Regra de Negócio Central) ✅ CONCLUÍDA
+
+🎯 **Objetivo**  
+Implementar um sistema robusto de créditos baseado em **ledger (transações)**.
+
+### Atividades
+- [x] Entity `CreditTransaction`
+- [x] Enum `CREDIT / DEBIT`
+- [x] `CreditPolicyService`
+- [x] Cálculo de saldo via soma de transações
+- [x] Bloqueio de ações sem crédito
+- [x] Registro automático de débito
+- [x] Transações auditáveis (sem campo `balance`)
+
+### Critério de pronto
+- [x] Envio bloqueado sem crédito
+- [x] Crédito consumido automaticamente
+- [x] Saldo sempre consistente
+
+---
+
+## 📝 FASE 5 — Envio de Redações (Core do Produto) ✅ CONCLUÍDA
+
+🎯 **Objetivo**  
+Permitir que alunos enviem redações com segurança e regras bem definidas.
+
+### Atividades
+- [x] Upload multipart (`multer`)
+- [x] Validação de campos obrigatórios
+- [x] Verificação de crédito ANTES do upload
+- [x] Persistência da redação
+- [x] Storage local
+- [x] Uso de transação (essay + debit)
+- [x] Status inicial (`SUBMITTED`)
+
+### Critério de pronto
+- [x] Upload inválido é bloqueado
+- [x] Redação só é enviada com crédito
+- [x] Fluxo validado end-to-end via Postman
+
+---
+
+## 📂 FASE 6 — Consulta & Gestão de Redações (Próxima) ✅ CONCLUÍDA
+
+🎯 **Objetivo**  
+Permitir visualizar e gerenciar redações enviadas.
+
+### Atividades
+- [x] Listar redações do aluno
+- [x] Buscar redação por ID
+- [x] Paginação
+- [x] Filtro por status
+- [x] DTOs de resposta adequados
+
+---
+
+## 🔐 FASE 7 — Autenticação & Autorização
+
+🎯 **Objetivo**  
+Preparar o sistema para múltiplos perfis e acesso seguro.
+
+### Atividades
+- [ ] JWT (base)
+- [ ] Identidade do usuário (student / admin)
+- [ ] Proteção de rotas
+- [ ] Separação de permissões
+- [ ] Middleware de auth
+
+---
+
+## 🧪 FASE 8 — Testes & Qualidade
+
+🎯 **Objetivo**  
+Garantir estabilidade e evitar regressões.
+
+### Atividades
+- [ ] Testes unitários (use cases)
+- [ ] Testes de integração (rotas)
+- [ ] Testes de cenários de erro
+- [ ] Coverage mínimo aceitável
+
+---
+
+## 📘 FASE 9 — Documentação & Produção
+
+🎯 **Objetivo**  
+Deixar o backend pronto para apresentação e deploy.
+
+### Atividades
+- [ ] Swagger / OpenAPI
+- [ ] README técnico profissional
+- [ ] Ajustes de build
+- [ ] Configuração segura de ambiente
+- [ ] Checklist de deploy
+
+---
+
+## 🧠 VISÃO ESTRATÉGICA
+
+- Sistema baseado em **regras de negócio reais**
+- Créditos implementados como **ledger auditável**
+- Arquitetura preparada para:
+  - planos mensais
+  - correção automática
+  - múltiplos corretores
+- Projeto utilizável como:
+  - portfólio
+  - base comercial
+  - argumento técnico em entrevistas
+
+---
+
+## 🏁 STATUS ATUAL
+
+🟢 **Core do produto totalmente funcional e validado**  
+🟡 Próximo foco: **consulta, auth e documentação**
+</file>
+
+<file path="src/app.ts">
+import express from 'express'
+import cors from 'cors'
+import helmet from 'helmet'
+
+import routes from './routes'
+
+import { rateLimitMiddleware } from './modules/shared/http/middlewares/rateLimit.middleware'
+import { errorMiddleware } from './modules/shared/http/middlewares/error.middleware'
+import { sanitizeMiddleware } from './modules/shared/http/middlewares/validation.middleware'
+
+const app = express()
+
+// ============================
+// Global middlewares
+// ============================
+app.use(helmet())
+app.use(cors())
+app.use(express.json())
+
+app.use(rateLimitMiddleware)
+app.use(sanitizeMiddleware)
+
+// ============================
+// Routes
+// ============================
+app.use('/api', routes)
+
+// ============================
+// Error handler (always last)
+// ============================
+app.use(errorMiddleware)
+
+export default app
+</file>
+
+<file path="src/routes/index.ts">
+import { Router } from 'express'
+import { buildEssayModule } from '../modules/essays/presentation'
+
+const routes = Router()
+
+// ============================
+// Modules
+// ============================
+const essayModule = buildEssayModule()
+routes.use(essayModule.routes)
+
+export default routes
+</file>
+
+<file path="src/server.ts">
+import app from './app'
+
+const PORT = process.env.PORT || 3000
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+})
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "Node16",
+    "moduleResolution": "node16",
+
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    "isolatedModules": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+
+    "sourceMap": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "src/tests"]
+}
+</file>
+
+</files>

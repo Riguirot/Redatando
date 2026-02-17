@@ -1,0 +1,15 @@
+---
+interface Props {
+  percentage: number;
+  height?: string;
+}
+
+const { percentage, height = "10px" } = Astro.props;
+---
+
+<div class="w-full bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden" style={`height:${height}`}>
+  <div
+    class="bg-linear-to-r from-purple-600 to-cyan-600 transition-all duration-500"
+    style={`width: ${percentage}% ; height:100%`}
+  />
+</div>

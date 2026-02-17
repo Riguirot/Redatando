@@ -1,0 +1,36 @@
+---
+interface Props {
+  w?: number;
+  h?: number;
+  class?: string;
+}
+
+const { w = 18, h = 18, class: className = "" } = Astro.props;
+---
+
+<svg
+  width={w}
+  height={h}
+  viewBox="0 0 48 48"
+  xmlns="http://www.w3.org/2000/svg"
+  class={className}
+>
+  <!-- Moeda base -->
+  <circle cx="24" cy="24" r="18" fill="#F59E0B" />
+
+  <!-- Sutil sombra interna -->
+  <circle cx="24" cy="24" r="18" fill="rgba(0,0,0,0.08)" />
+
+  <!-- Símbolo -->
+  <text
+    x="24"
+    y="29"
+    text-anchor="middle"
+    font-size="18"
+    font-weight="800"
+    fill="white"
+    font-family="sans-serif"
+  >
+    $
+  </text>
+</svg>

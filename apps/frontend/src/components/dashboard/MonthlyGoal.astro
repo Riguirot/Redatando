@@ -1,0 +1,44 @@
+---
+import ProgressBar from "./ProgressBar.astro";
+
+interface Props {
+  month: string;
+  completed: number;
+  goal: number;
+  daysSinceLastEssay: number;
+}
+
+const { month, completed, goal, daysSinceLastEssay } = Astro.props;
+
+const percentage = Math.round((completed / goal) * 100);
+---
+
+<section class="mb-12">
+  <div class="glass-card p-8">
+
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h3 class="text-xl font-bold mb-1">Meta Mensal</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          {month}
+        </p>
+      </div>
+
+      <span class="text-2xl font-bold text-purple-600">
+        {completed}/{goal}
+      </span>
+    </div>
+
+    <ProgressBar percentage={percentage} />
+
+    <div class="mt-4 flex justify-between text-sm text-gray-600 dark:text-gray-400">
+      <span>{completed} redações concluídas</span>
+      <span>Faltam {goal - completed}</span>
+    </div>
+
+    <p class="mt-4 text-sm text-gray-700 dark:text-gray-300">
+      ⏱️ <strong>Dias desde a última redação:</strong> {daysSinceLastEssay} dias
+    </p>
+
+  </div>
+</section>

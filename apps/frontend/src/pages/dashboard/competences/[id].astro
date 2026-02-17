@@ -1,0 +1,130 @@
+---
+export const prerender = false;
+
+import DashboardLayout from "../../../layouts/DashboardLayout.astro";
+import type { CompetenceContent } from "../../../types/competence";
+
+const { id } = Astro.params as { id: string };
+
+const validIds = ["C1", "C2", "C3", "C4", "C5"];
+
+if (!validIds.includes(id)) {
+  return Astro.redirect("/dashboard");
+}
+
+const response = await fetch(
+  `${import.meta.env.PUBLIC_API_URL}/api/competences/${id}`
+);
+
+if (!response.ok) {
+  return Astro.redirect("/dashboard");
+}
+
+const competence: CompetenceContent = await response.json();
+
+const credits = 1;
+const studentInitial = "L";
+---
+
+
+<DashboardLayout credits={credits} studentInitial={studentInitial}>
+
+  <section class="space-y-10">
+
+    <!-- Header -->
+    <div class="space-y-2">
+      <h1 class="text-3xl font-bold text-white">
+        {competence.id} — {competence.title}
+      </h1>
+      <p class="text-neutral-400 max-w-3xl">
+        {competence.description}
+      </p>
+    </div>
+
+    <!-- Tabs das Competências -->
+    <div class="flex gap-3 flex-wrap">
+      {validIds.map((competenceId) => (
+        <a
+          href={`/dashboard/competences/${competenceId}`}
+          class={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300
+            ${
+              competenceId === id
+                ? "bg-linear-to-r from-purple-600 to-purple-500 text-white shadow-lg"
+                : "bg-[#1a1f2e] text-neutral-400 hover:bg-[#22283a]"
+            }`}
+        >
+          {competenceId}
+        </a>
+      ))}
+    </div>
+
+    <!-- O que o avaliador busca -->
+    <div class="glass-card">
+      <h2 class="text-xl font-semibold text-white mb-4">
+        O que o avaliador busca
+      </h2>
+      <ul class="space-y-2 text-neutral-300">
+        {competence.evaluatorFocus.map((item) => (
+          <li>• {item}</li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Erros comuns -->
+    <div class="glass-card">
+      <h2 class="text-xl font-semibold text-white mb-4">
+        Erros comuns
+      </h2>
+      <ul class="space-y-2 text-neutral-300">
+        {competence.commonMistakes.map((item) => (
+          <li>• {item}</li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Exemplo comentado -->
+    <div class="glass-card">
+      <h2 class="text-xl font-semibold text-white mb-4">
+        Exemplo comentado
+      </h2>
+      <pre class="text-neutral-300 whitespace-pre-wrap text-sm leading-relaxed">
+        {competence.example}
+      </pre>
+    </div>
+
+    <!-- Checklist -->
+    <div class="glass-card">
+      <h2 class="text-xl font-semibold text-white mb-4">
+        Checklist prático
+      </h2>
+      <ul class="space-y-2 text-neutral-300">
+        {competence.checklist.map((item) => (
+          <li>☑ {item}</li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Aula -->
+    <div class="glass-card flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <h2 class="text-xl font-semibold text-white mb-2">
+          Aula complementar
+        </h2>
+        <p class="text-neutral-400 text-sm">
+          Assista à aula específica para aprofundar essa competência.
+        </p>
+      </div>
+
+      <a
+  href={`/dashboard/competences/${id}`}
+  transition:animate="slide"
+  class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ..."
+>
+  Voltar
+</a>
+
+    </div>
+
+  </section>
+
+</DashboardLayout>
