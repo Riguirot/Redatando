@@ -10,6 +10,7 @@ import progressRoutes from "./modules/progress/progress.routes"
 import { rateLimitMiddleware } from './modules/shared/http/middlewares/rateLimit.middleware'
 import { errorMiddleware } from './modules/shared/http/middlewares/error.middleware'
 import { sanitizeMiddleware } from './modules/shared/http/middlewares/validation.middleware'
+import { healthRouter } from './modules/shared/http/health.routes'
 
 const app = express()
 
@@ -29,6 +30,7 @@ app.use(sanitizeMiddleware)
 app.use('/api', routes)
 app.use("/api/competences", competenceRoutes)
 app.use("/api/users", progressRoutes)
+app.use('/health', healthRouter)
 
 // ============================
 // Error handler (always last)
