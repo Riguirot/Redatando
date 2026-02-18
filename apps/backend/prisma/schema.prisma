@@ -6,6 +6,7 @@ datasource db {
   provider = "postgresql"
 }
 
+
 model Content {
   id        String   @id @default(uuid())
   title     String
