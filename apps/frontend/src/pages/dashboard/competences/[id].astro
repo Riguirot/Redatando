@@ -12,8 +12,14 @@ if (!validIds.includes(id)) {
   return Astro.redirect("/dashboard");
 }
 
+const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("PUBLIC_API_BASE_URL não está definida no frontend.");
+}
+
 const response = await fetch(
-  `${import.meta.env.PUBLIC_API_URL}/api/competences/${id}`
+  `${import.meta.env.PUBLIC_API_BASE_URL}/api/competences/${id}`
 );
 
 if (!response.ok) {

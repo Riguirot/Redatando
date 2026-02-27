@@ -1,6 +1,7 @@
 ---
 import ThemeToggle from "../common/ThemeToggle.astro";
 import CoinCreditMiniIcon from "../../icons/CoinCreditMiniIcon.astro";
+import AccountDrawer from "../common/AccountDrawer.astro";
 
 interface Props {
   credits: number;
@@ -21,11 +22,13 @@ const creditText =
 
       <!-- LOGO -->
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-linear-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold">
-          R
-        </div>
+        <img 
+          src="/logo/graphia.svg" 
+          alt="Graphia Logo"
+          class="w-8 h-8 object-contain"
+        />
         <span class="text-lg font-bold bg-linear-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-          Redatando
+          Graphia
         </span>
       </div>
 
@@ -66,9 +69,10 @@ const creditText =
         <ThemeToggle />
 
         <!-- AVATAR -->
-        <div class="w-10 h-10 rounded-full bg-linear-to-br from-purple-400 to-cyan-500 flex items-center justify-center text-white font-bold">
+        <button onclick="openAccountDrawer()"
+          class="w-10 h-10 rounded-full bg-linear-to-br from-purple-400 to-cyan-500 flex items-center justify-center text-white font-bold">
           {studentInitial}
-        </div>
+        </button>
 
       </div>
     </div>

@@ -1,55 +1,276 @@
 ---
-interface Props {
-  scores: number[];
+interface ChartItem {
+  label: string;
+  score: number | null;
+  theme?: string;
+  date?: string;
 }
 
-const { scores } = Astro.props;
+interface Props {
+  data?: ChartItem[];
+}
 
-const maxScore = Math.max(...scores);
-const minScore = Math.min(...scores);
+const { data = [] }: Props = Astro.props;
 
-const width = 100;
-const height = 60;
+/* ---------- CONFIG ---------- */
 
-const points = scores
-  .map((score, i) => {
-    const x = (i / (scores.length - 1)) * width;
+const width = 1200;
+const height = 400;
 
-    const normalized =
-      (score - minScore) / (maxScore - minScore || 1);
+const paddingLeft = 80;
+const paddingRight = 40;
+const paddingTop = 40;
+const paddingBottom = 50;
 
-    const y = height - normalized * height;
+const chartWidth = width - paddingLeft - paddingRight;
+const chartHeight = height - paddingTop - paddingBottom;
 
-    return `${x},${y}`;
+const maxValue = 1000;
+const minValue = 0;
+
+/* ---------- PROTEÇÃO ---------- */
+
+const safeLength = Math.max(data.length, 2);
+const stepX = chartWidth / (safeLength - 1);
+
+/* ---------- CONVERTE DATA ---------- */
+
+type Point = { x: number; y: number };
+
+const points: Point[] = data
+  .map((item, i) => {
+    if (item.score === null) return null;
+
+    const x = paddingLeft + i * stepX;
+    const normalized = (item.score - minValue) / (maxValue - minValue);
+    const y =
+      paddingTop +
+      chartHeight -
+      normalized * chartHeight;
+
+    return { x, y };
   })
-  .join(" ");
+  .filter((p): p is Point => p !== null);
+
+/* ---------- PATH DA LINHA ---------- */
+
+let linePath = "";
+if (points.length > 0) {
+  linePath = points
+    .map((p, i) =>
+      `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`
+    )
+    .join(" ");
+}
+
+/* ---------- ÁREA ---------- */
+
+const baseY = paddingTop + chartHeight;
+
+let areaPath = "";
+if (points.length > 0) {
+  areaPath = `
+    ${linePath}
+    L ${points.at(-1)!.x} ${baseY}
+    L ${points[0].x} ${baseY}
+    Z
+  `;
+}
+
+/* ---------- EIXO Y ---------- */
+
+const yTicks = [1000, 800, 600, 400, 200, 0];
+
+function getYPosition(value: number) {
+  const normalized = (value - minValue) / (maxValue - minValue);
+  return paddingTop + chartHeight - normalized * chartHeight;
+}
 ---
 
-<div class="mb-8">
-  <h4 class="text-sm text-gray-500 mb-2">
-    Evolução das Notas
-  </h4>
+<style>
+@keyframes chartPulse {
+  0% { r: 6; opacity: 0.8; }
+  70% { r: 20; opacity: 0; }
+  100% { r: 20; opacity: 0; }
+}
 
-  <svg
-    viewBox={`0 0 ${width} ${height}`}
-    class="w-full h-40"
-  >
-    <polyline
-      fill="none"
-      stroke="url(#gradient)"
-      stroke-width="3"
-      points={points}
-    />
+.chart-pulse {
+  animation: chartPulse 2s ease-out infinite;
+}
 
-    <defs>
-      <linearGradient id="gradient">
-        <stop offset="0%" stop-color="#9333ea" />
-        <stop offset="100%" stop-color="#06b6d4" />
-      </linearGradient>
-    </defs>
-  </svg>
+.chart-glow {
+  filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.7));
+}
+</style>
 
-  <span class="text-xs text-purple-500 font-semibold">
-    +120 pontos
-  </span>
+<div class="w-full">
+
+  {data.length === 0 && (
+    <div class="text-sm text-gray-500 p-6">
+      Nenhum dado disponível ainda.
+    </div>
+  )}
+
+  {data.length > 0 && (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      preserveAspectRatio="xMidYMid meet"
+      class="w-full h-[320px]"
+    >
+
+      {/* GRID + Y AXIS */}
+      {yTicks.map((tick) => (
+        <>
+          <line
+            x1={paddingLeft}
+            x2={width - paddingRight}
+            y1={getYPosition(tick)}
+            y2={getYPosition(tick)}
+            stroke="rgba(139,92,246,0.08)"
+            stroke-width="1"
+          />
+          <text
+            x={paddingLeft - 15}
+            y={getYPosition(tick) + 4}
+            text-anchor="end"
+            font-size="12"
+            fill="rgba(148,163,184,0.7)"
+          >
+            {tick}
+          </text>
+        </>
+      ))}
+
+      {/* X AXIS */}
+      {data.map((item, i) => (
+        <text
+          x={paddingLeft + i * stepX}
+          y={height - 15}
+          text-anchor="middle"
+          font-size="12"
+          fill="rgba(148,163,184,0.7)"
+        >
+          {item.label}
+        </text>
+      ))}
+
+      {/* GRADIENT */}
+      <defs>
+        <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+
+      {/* ÁREA */}
+      {points.length > 0 && (
+        <path d={areaPath} fill="url(#chartGrad)" />
+      )}
+
+      {/* LINHA */}
+      {points.length > 0 && (
+        <path
+          d={linePath}
+          fill="none"
+          stroke="#8b5cf6"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      )}
+
+      {/* PONTOS + TOOLTIP */}
+      {points.map((p, i) => {
+        const isLast = i === points.length - 1;
+        const item = data[i];
+
+        return (
+          <g class="group cursor-pointer">
+
+            {/* HIT AREA INVISÍVEL */}
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r="18"
+              fill="transparent"
+            />
+
+            {/* TOOLTIP */}
+            {item.score !== null && (
+              <g class="opacity-0 group-hover:opacity-100 transition duration-200">
+
+                <rect
+                  x={p.x - 110}
+                  y={p.y - 115}
+                  width="220"
+                  height="85"
+                  rx="14"
+                  fill="#0f172a"
+                  stroke="#8b5cf6"
+                  stroke-width="1.2"
+                />
+
+                <text
+                  x={p.x}
+                  y={p.y - 85}
+                  text-anchor="middle"
+                  font-size="12"
+                  fill="#a78bfa"
+                >
+                  {item.theme ?? "Tema não informado"}
+                </text>
+
+                <text
+                  x={p.x}
+                  y={p.y - 60}
+                  text-anchor="middle"
+                  font-size="15"
+                  font-weight="bold"
+                  fill="#06b6d4"
+                >
+                  Nota: {item.score}
+                </text>
+
+                <text
+                  x={p.x}
+                  y={p.y - 40}
+                  text-anchor="middle"
+                  font-size="11"
+                  fill="#94a3b8"
+                >
+                  {item.date ?? ""}
+                </text>
+
+              </g>
+            )}
+
+            {/* PULSE DO ÚLTIMO */}
+            {isLast && (
+              <circle
+                cx={p.x}
+                cy={p.y}
+                r="10"
+                fill="none"
+                stroke="#06b6d4"
+                stroke-width="6"
+                class="chart-pulse"
+              />
+            )}
+
+            {/* PONTO VISUAL REAL */}
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r={isLast ? 10 : 5}
+              fill={isLast ? "#06b6d4" : "#8b5cf6"}
+              class={isLast ? "chart-glow" : ""}
+            />
+
+          </g>
+        );
+      })}
+
+    </svg>
+  )}
+
 </div>

@@ -1,0 +1,73 @@
+---
+// sem props por enquanto
+---
+
+<div id="drawer-overlay"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-90">
+</div>
+
+<aside id="account-drawer"
+  class="fixed top-0 right-0 h-full w-340px
+       z-100
+       translate-x-full transition-transform duration-300">
+
+  <!-- Header -->
+  <div class="p-6 border-b border-white/10">
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 rounded-full bg-linear-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-lg">
+        LP
+      </div>
+      <div>
+        <p class="font-semibold text-white">Luiz Felipe Porfirio</p>
+        <p class="text-sm text-gray-400">felipe.porfirio77@gmail.com</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <nav class="flex-1 p-6 space-y-4 text-gray-300">
+
+    <button type="button" class="block w-full text-left hover:text-white transition">
+        Início
+    </button>
+  
+    <button type="button" class="block w-full text-left hover:text-white transition">
+        Meu Perfil
+    </button>
+ 
+    <button type="button" class="block w-full text-left hover:text-white transition">
+        Favoritos
+    </button>
+  
+    <button type="button" class="block w-full text-left hover:text-white transition">
+        Avaliações
+    </button>
+
+    <div class="border-t border-white/10 pt-4 mt-4">
+      <button class="text-red-400 hover:text-red-300 transition">
+        Desconectar
+      </button>
+    </div>
+
+  </nav>
+</aside>
+
+<script is:inline>
+  const drawer = document.getElementById("account-drawer");
+  const overlay = document.getElementById("drawer-overlay");
+
+  function openDrawer() {
+    drawer.classList.remove("translate-x-full");
+    overlay.classList.remove("opacity-0", "pointer-events-none");
+  }
+
+  function closeDrawer() {
+    drawer.classList.add("translate-x-full");
+    overlay.classList.add("opacity-0", "pointer-events-none");
+  }
+
+  overlay.addEventListener("click", closeDrawer);
+
+  // expor globalmente para o Navbar chamar
+  window.openAccountDrawer = openDrawer;
+</script>

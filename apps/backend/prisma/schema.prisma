@@ -27,6 +27,18 @@ model CreditTransaction {
   @@index([userId])
 }
 
+model Student {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  credits   Int      @default(0)
+
+  essays    Essay[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Essay {
   id        String   @id @default(uuid())
   studentId String
@@ -34,9 +46,35 @@ model Essay {
   fileUrl   String
   status    String
 
+  student   Student  @relation(fields: [studentId], references: [id])
+  correction Correction?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([studentId])
 }
 
+model Correction {
+  id        String   @id @default(uuid())
+
+  essayId   String   @unique
+  essay     Essay    @relation(fields: [essayId], references: [id])
+
+  c1        Int
+  c2        Int
+  c3        Int
+  c4        Int
+  c5        Int
+
+  total     Int
+  feedback  String
+
+  createdAt DateTime @default(now())
+}
+
+model RecommendedTheme {
+  id               String @id @default(uuid())
+  title            String
+  focusCompetency  String // "C1", "C2", "C3", ...
+}

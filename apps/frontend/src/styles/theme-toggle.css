@@ -1,165 +1,116 @@
-/* Container */
-.switch,
-.switch__input {
-  position: relative;
-  -webkit-tap-highlight-color: transparent;
+.day-night-checkbox {
+  width: 70px;
+  height: 32px;
 }
 
-.switch {
-  display: inline-block;
+.day-night-checkbox input {
+  display: none;
 }
 
-/* Track */
-.switch__input,
-.switch__input:before {
-  background-color: hsl(223, 10%, 10%);
-}
-
-.switch__input {
-  border-radius: 0.75em;
-  cursor: pointer;
-  display: block;
-  width: 3em;
-  height: 1.5em;
-  transition: 0.4s cubic-bezier(0.65, 0, 0.35, 1);
-  appearance: none;
-}
-
-.switch__input:before {
-  border-radius: 50%;
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0.125em;
-  left: 0.125em;
-  width: 1.25em;
-  height: 1.25em;
-  transition: 
-    background-color 0.4s cubic-bezier(0.65, 0, 0.35, 1),
-    transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-/* Icon container */
-.switch__icon,
-.switch__icon-part {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.switch__icon {
-  background-color: hsl(223, 10%, 90%);
-  border-radius: 50%;
+.day-night-checkbox label {
   overflow: hidden;
-  pointer-events: none;
-  top: 0.125em;
-  left: 0.125em;
-  width: 1.25em;
-  height: 1.25em;
-  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  height: 100%;
+  width: 100%;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+  border-radius: 50px;
+  background: #3f51b5;
+  position: relative;
+  box-shadow: inset 0 0 2px 1px rgba(0, 0, 0, 0.3);
 }
 
-/* Core circle */
-.switch__icon-part--1,
-.switch__icon-part--2,
-.switch__icon-part--3 {
+.day-night-checkbox .knob {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: blanchedalmond;
+  position: absolute;
+  transition: all 0.3s ease-in;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 38px;
+  box-shadow: 
+    inset 2px -1px 0px 2px rgba(0, 0, 0, 0.05),
+    0px 0px 10px 0px #ffffff;
+}
+
+.day-night-checkbox .knob:after {
+  content: "";
+  width: 6px;
+  height: 9px;
+  background-color: rgba(249, 215, 165, 0.37);
+  top: 10%;
+  left: 54%;
+  transform: rotate(-35deg);
+  box-shadow: -10px 8px 0px 4px rgba(249, 215, 165, 0.37);
+  position: absolute;
   border-radius: 50%;
 }
 
-.switch__icon-part--1 {
-  background-color: hsl(223, 10%, 90%);
+.day-night-checkbox i {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  right: 35%;
   top: 50%;
-  left: 50%;
-  width: 0.75em;
-  height: 0.75em;
-  transform: translate(-50%, -50%);
+  background: white;
+  box-shadow:
+    0 0 0 2px rgb(255 255 255 / 28%),
+    -12px -16px 0 -1.2px white,
+    15px -20px 0 -1.5px white,
+    27px 0.35px 0 -2.3px white;
+  animation: show .5s ease-in-out;
 }
 
-.switch__icon-part--2 {
-  background-color: hsl(223, 10%, 10%);
-  top: 50%;
-  left: 50%;
-  width: 0.5em;
-  height: 0.5em;
-  transform: translate(-0.1875em, 0.1875em) scale(0.2);
-  transition: 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+.day-night-checkbox input:checked + label {
+  background: #00bcd4;
 }
 
-.switch__icon-part--3 {
-  box-shadow: 0 0 0 0.625em hsl(223, 10%, 10%) inset;
-  width: 1.25em;
-  height: 1.25em;
-  transform: scale(0.25);
-  transition: 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+.day-night-checkbox input:checked + label .knob {
+  right: 4px;
+  background: rgb(251, 207, 7);
+  box-shadow:
+    inset -2px -1px 0px 2px rgba(0, 0, 0, 0.05),
+    0px 0px 20px 5px rgb(255, 224, 82);
 }
 
-/* Rays */
-.switch__icon-part--3 ~ .switch__icon-part {
-  background-color: hsl(223, 10%, 10%);
-  border-radius: 0.0625em;
-  top: 50%;
-  left: 50%;
-  width: 0.125em;
-  height: 0.1875em;
-  transform-origin: 50% 0;
-  transition: 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+.day-night-checkbox input:checked + label .knob:before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 10px;
+  top: 55%;
+  position: absolute;
+  left: -119%;
+  box-shadow:
+    -12px -1px 0px 1px white,
+    -9px -2px 0px 2px white,
+    -3px -3px 0px 3px white,
+    2px -1.5px 0px 1.5px white,
+    5px -0.5px 0px 0.5px white,
+    -6px -1.9px 0px 2px white;
+  animation: example 10s linear infinite;
 }
 
-.switch__icon-part--4 { transform: translateX(-50%) rotate(0deg) translateY(0.25em); }
-.switch__icon-part--5 { transform: translateX(-50%) rotate(45deg) translateY(0.25em); }
-.switch__icon-part--6 { transform: translateX(-50%) rotate(90deg) translateY(0.25em); }
-.switch__icon-part--7 { transform: translateX(-50%) rotate(135deg) translateY(0.25em); }
-.switch__icon-part--8 { transform: translateX(-50%) rotate(180deg) translateY(0.25em); }
-.switch__icon-part--9 { transform: translateX(-50%) rotate(225deg) translateY(0.25em); }
-.switch__icon-part--10 { transform: translateX(-50%) rotate(270deg) translateY(0.25em); }
-.switch__icon-part--11 { transform: translateX(-50%) rotate(315deg) translateY(0.25em); }
-
-/* ========================= */
-/* CHECKED STATE (🌙 LUA)   */
-/* ========================= */
-
-.switch__input:checked {
-  background-color: hsl(223, 10%, 90%);
+.day-night-checkbox input:checked + label i {
+  animation: hide 0.5s ease-in-out forwards;
 }
 
-.switch__input:checked:before,
-.switch__input:checked ~ .switch__icon {
-  transform: translateX(1.5em);
+@keyframes example {
+  0% { left: -219%; }
+  100% { left: 159%; }
 }
 
-.switch__input:checked ~ .switch__icon .switch__icon-part--2 {
-  transform: translate(0, 0) scale(1);
+@keyframes show {
+  0% { transform: translateY(-700%) translateX(1500%); }
+  100% { transform: translateY(0%) translateX(0%); }
 }
 
-.switch__input:checked ~ .switch__icon .switch__icon-part--3 {
-  box-shadow: 0 0 0 0.25em hsl(223, 10%, 10%) inset;
-  transform: scale(1);
-}
-
-.switch__input:checked 
-~ .switch__icon 
-.switch__icon-part--4,
-.switch__input:checked 
-~ .switch__icon 
-.switch__icon-part--5,
-.switch__input:checked 
-~ .switch__icon 
-.switch__icon-part--6,
-.switch__input:checked 
-~ .switch__icon 
-.switch__icon-part--7,
-.switch__input:checked 
-~ .switch__icon 
-.switch__icon-part--8,
-.switch__input:checked 
-~ .switch__icon 
-.switch__icon-part--9,
-.switch__input:checked 
-~ .switch__icon 
-.switch__icon-part--10,
-.switch__input:checked 
-~ .switch__icon 
-.switch__icon-part--11 {
-  transform: translateX(-50%) rotate(0deg) translateY(0.625em) scale(0);
+@keyframes hide {
+  0% { transform: translateY(0%) translateX(0%); }
+  100% { transform: translateY(700%) translateX(-1500%); }
 }

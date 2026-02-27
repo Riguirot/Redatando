@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Navbar from "../components/dashboard/Navbar.astro";
 import { ClientRouter } from "astro:transitions";
+import AccountDrawer from "../components/common/AccountDrawer.astro";
 
 interface Props {
   credits: number;
@@ -11,7 +12,7 @@ interface Props {
 const { credits, studentInitial } = Astro.props;
 ---
 
-<html lang="pt-BR" transition:animate="fade">
+<html lang="pt-BR" transition:animate="fade" class="bg-neutral-100 dark:bg-neutral-950">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,7 +25,9 @@ const { credits, studentInitial } = Astro.props;
     <script is:inline>
       function applyTheme() {
         const savedTheme = localStorage.getItem("theme");
-        if (savedTheme === "dark") {
+        const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
           document.documentElement.classList.add("dark");
         } else {
           document.documentElement.classList.remove("dark");
@@ -54,14 +57,11 @@ const { credits, studentInitial } = Astro.props;
           star.style.left = Math.random() * 100 + "%";
           star.style.top = Math.random() * 100 + "%";
           star.style.animationDelay = Math.random() * 3 + "s";
-          star.style.animationDuration =
-            Math.random() * 2 + 2 + "s";
+          star.style.animationDuration = Math.random() * 2 + 2 + "s";
 
           container.appendChild(star);
         }
       }
-
-      window.addEventListener("DOMContentLoaded", generateStars);
     </script>
   </head>
 
@@ -83,5 +83,8 @@ const { credits, studentInitial } = Astro.props;
         <slot />
       </section>
     </main>
+
+    <AccountDrawer />
+
   </body>
 </html>

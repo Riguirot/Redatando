@@ -15,45 +15,46 @@ const {
 
 const variationColor =
   variationType === "positive"
-    ? "text-emerald-600 bg-emerald-500/10 dark:text-emerald-400 dark:bg-emerald-500/15"
+    ? "text-emerald-400 bg-emerald-500/15"
     : variationType === "negative"
-    ? "text-red-600 bg-red-500/10 dark:text-red-400 dark:bg-red-500/15"
-    : "text-gray-600 bg-gray-400/10 dark:text-gray-400 dark:bg-gray-500/15";
+    ? "text-red-400 bg-red-500/15"
+    : "text-gray-400 bg-gray-500/15";
 ---
 
-<div
-  class="rounded-2xl border border-slate-200 dark:border-white/10
-         bg-white dark:bg-slate-900/60
-         p-6 transition-all duration-300
-         hover:border-purple-400/40
-         hover:shadow-[0_12px_40px_rgba(139,92,246,0.15)]
-         hover:-translate-y-0.5"
->
-  <!-- ICON -->
-  <div class={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${iconBg}`}>
-    {Icon && <Icon class={`w-6 h-6 ${iconColor}`} />}
-  </div>
+<div class="metric-card-wrapper">
 
-  <!-- VALUE + BADGE -->
-  <div class="flex items-center gap-3 mb-2">
-    <h3 class="text-4xl font-semibold text-slate-900 dark:text-white">
-      {value}
-    </h3>
+  <div class="metric-card-base"></div>
 
-    {variation && (
-      <div class={`flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium ${variationColor}`}>
-        {variation}
-      </div>
-    )}
-  </div>
+  <div class="metric-card-content">
 
-  <p class="text-sm text-slate-500 dark:text-gray-400 mb-4">
-    vs. mês anterior
-  </p>
+    <!-- ICON -->
+    <div class={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${iconBg}`}>
+      {Icon && <Icon class={`w-6 h-6 ${iconColor}`} />}
+    </div>
 
-  <div class="pt-4 border-t border-slate-200 dark:border-white/10">
-    <p class="text-slate-900 dark:text-white font-medium">
-      {title}
+    <!-- VALUE + BADGE -->
+    <div class="flex items-center gap-3 mb-2">
+      <h3 class="text-4xl font-semibold text-slate-900 dark:text-white">
+        {value}
+      </h3>
+
+      {variation && (
+        <div class={`flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium ${variationColor}`}>
+          {variation}
+        </div>
+      )}
+    </div>
+
+    <p class="text-sm text-slate-500 dark:text-gray-400 mb-4">
+      vs. mês anterior
     </p>
+
+    <div class="pt-4 border-t border-white/10">
+      <p class="text-slate-900 dark:text-white font-medium">
+        {title}
+      </p>
+    </div>
+
   </div>
+
 </div>

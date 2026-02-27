@@ -1,50 +1,45 @@
-<label class="switch">
-  <input
-    id="theme-toggle"
-    class="switch__input"
-    type="checkbox"
-    role="switch"
-    aria-label="Alternar tema"
-  />
+---
+// nenhum import extra
+---
 
-  <span class="switch__icon">
-    <span class="switch__icon-part switch__icon-part--1"></span>
-    <span class="switch__icon-part switch__icon-part--2"></span>
-    <span class="switch__icon-part switch__icon-part--3"></span>
-    <span class="switch__icon-part switch__icon-part--4"></span>
-    <span class="switch__icon-part switch__icon-part--5"></span>
-    <span class="switch__icon-part switch__icon-part--6"></span>
-    <span class="switch__icon-part switch__icon-part--7"></span>
-    <span class="switch__icon-part switch__icon-part--8"></span>
-    <span class="switch__icon-part switch__icon-part--9"></span>
-    <span class="switch__icon-part switch__icon-part--10"></span>
-    <span class="switch__icon-part switch__icon-part--11"></span>
-  </span>
-
-  <!-- Acessibilidade (não visível) -->
-  <span class="sr-only">Alternar tema claro/escuro</span>
-</label>
+<div class="day-night-checkbox">
+  <input type="checkbox" id="theme-toggle">
+  <label for="theme-toggle">
+    <span class="knob"></span>
+    <i></i>
+  </label>
+</div>
 
 <script is:inline>
-  const toggle = document.querySelector("#theme-toggle");
+  const checkbox = document.getElementById("theme-toggle");
 
-  if (toggle) {
-    const savedTheme = localStorage.getItem("theme");
-
-    // Estado inicial
-    if (savedTheme === "dark") {
+  function applyTheme(isDark) {
+    if (isDark) {
       document.documentElement.classList.add("dark");
-      toggle.checked = true;
-    } else if (savedTheme === "light") {
+      localStorage.setItem("theme", "dark");
+      checkbox.checked = false; // Lua
+    } else {
       document.documentElement.classList.remove("dark");
-      toggle.checked = false;
+      localStorage.setItem("theme", "light");
+      checkbox.checked = true; // Sol
     }
-
-    toggle.addEventListener("change", () => {
-      const enabled = toggle.checked;
-
-      document.documentElement.classList.toggle("dark", enabled);
-      localStorage.setItem("theme", enabled ? "dark" : "light");
-    });
   }
+
+  // Estado inicial
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "dark") {
+    applyTheme(true);
+  } else {
+    applyTheme(false);
+  }
+
+  checkbox.addEventListener("change", () => {
+    const isDark = !checkbox.checked; 
+    applyTheme(isDark);
+  });
 </script>
+
+<style is:global>
+  @import "../../styles/theme-toggle.css";
+</style>

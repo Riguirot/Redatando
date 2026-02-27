@@ -11,6 +11,7 @@ import { rateLimitMiddleware } from './modules/shared/http/middlewares/rateLimit
 import { errorMiddleware } from './modules/shared/http/middlewares/error.middleware'
 import { sanitizeMiddleware } from './modules/shared/http/middlewares/validation.middleware'
 import { healthRouter } from './modules/shared/http/health.routes'
+import { dashboardRoutes } from "./modules/dashboard/infra/http/routes/dashboard.routes"
 
 const app = express()
 
@@ -28,6 +29,7 @@ app.use(sanitizeMiddleware)
 // Routes
 // ============================
 app.use('/api', routes)
+app.use(dashboardRoutes)
 app.use("/api/competences", competenceRoutes)
 app.use("/api/users", progressRoutes)
 app.use('/health', healthRouter)

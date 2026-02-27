@@ -13,27 +13,40 @@ interface Props {
   competencies: Competency[];
   overallProgress: number;
   evolutionTotal: number;
-  scoresHistory: number[];
+  scoresHistory: number[]; // [600, null, 800...]
 }
 
-const { competencies, overallProgress, evolutionTotal, scoresHistory } = Astro.props;
+const {
+  competencies,
+  overallProgress,
+  evolutionTotal,
+  scoresHistory = [],
+} = Astro.props;
+
+/* -------------------------------
+   Converte number[] em estrutura
+   temporal para o gráfico
+-------------------------------- */
+
+const weekLabels = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+
+const chartData = weekLabels.map((label, i) => ({
+  label,
+  score: scoresHistory[i] ?? null,
+}));
 ---
 
 <section class="mb-12">
-
   <div class="glass-card p-8">
 
-    <!-- HEADER -->
-    <div class="flex justify-between items-start mb-8">
+    {/* ---------------- HEADER ---------------- */}
 
+    <div class="flex justify-between items-start mb-8">
       <div>
-        <h3 class="text-xl font-bold flex items-center gap-2
-                   text-neutral-900 dark:text-neutral-100">
+        <h3 class="text-xl font-bold flex items-center gap-2">
           📊 Desempenho Analítico
         </h3>
-
-        <p class="text-sm mt-1
-                  text-neutral-600 dark:text-neutral-400">
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">
           Evolução das Notas
         </p>
       </div>
@@ -41,45 +54,48 @@ const { competencies, overallProgress, evolutionTotal, scoresHistory } = Astro.p
       <span
         class="
           text-sm font-semibold
-          px-4 py-1.5
-          rounded-full
+          px-4 py-1.5 rounded-full
           bg-purple-100 text-purple-600
           dark:bg-purple-900/40 dark:text-purple-300
         "
       >
         +{evolutionTotal} pontos
       </span>
-
     </div>
 
-    <!-- GRÁFICO -->
-    <ScoreEvolutionChart scores={scoresHistory} />
+    {/* ---------------- GRÁFICO ---------------- */}
 
-    <!-- COMPETÊNCIAS -->
+    <div class="mb-10">
+      <ScoreEvolutionChart data={chartData} />
+    </div>
+
+    {/* ---------------- COMPETÊNCIAS ---------------- */}
+
     <div class="mt-10">
-      <h4 class="font-semibold mb-5
-                 text-neutral-800 dark:text-neutral-200">
+      <h4 class="font-semibold mb-5 text-neutral-800 dark:text-neutral-200">
         Progresso por Competências
       </h4>
 
-      {competencies.map((comp) => (
-        <CompetencyBar
-          label={comp.label}
-          value={comp.value}
-          max={comp.max}
-        />
-      ))}
+      <div class="space-y-6">
+        {competencies.map((comp) => (
+          <CompetencyBar
+            label={comp.label}
+            value={comp.value}
+            max={comp.max}
+          />
+        ))}
+      </div>
     </div>
 
-    <!-- DIVISÃO -->
+    {/* ---------------- DIVISOR ---------------- */}
+
     <div class="my-8 border-t border-neutral-200 dark:border-[#1F2A44]" />
 
-    <!-- PROGRESSO GERAL -->
+    {/* ---------------- PROGRESSO GERAL ---------------- */}
+
     <div>
       <div class="flex justify-between items-center mb-3">
-
-        <h4 class="font-semibold
-                   text-neutral-800 dark:text-neutral-200">
+        <h4 class="font-semibold text-neutral-800 dark:text-neutral-200">
           Progresso Geral
         </h4>
 
@@ -92,14 +108,13 @@ const { competencies, overallProgress, evolutionTotal, scoresHistory } = Astro.p
         >
           {overallProgress}%
         </span>
-
       </div>
 
       <ProgressBar percentage={overallProgress} height="12px" />
 
-      <p class="text-sm mt-4
-                text-neutral-600 dark:text-neutral-400">
-        Você está muito perto da excelência! Continue praticando para maximizar todas as competências.
+      <p class="text-sm mt-4 text-neutral-600 dark:text-neutral-400">
+        Você está muito perto da excelência! Continue praticando
+        para maximizar todas as competências.
       </p>
     </div>
 

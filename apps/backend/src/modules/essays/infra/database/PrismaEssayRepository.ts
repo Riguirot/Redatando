@@ -1,13 +1,11 @@
-import { prisma } from '../../../shared/database/prismaClient'
-import { Essay } from '../../domain/entities/Essay'
-import { EssayRepository } from '../../ports/EssayRepository'
-import { EssayStatus } from '../../domain/valueObjects/EssayStatus'
+import { prisma } from "../../../shared/database/prismaClient"
+import { Essay } from "../../domain/entities/Essay"
+import { EssayRepository } from "../../ports/EssayRepository"
+import { EssayStatus } from "../../domain/valueObjects/EssayStatus"
 
 export class PrismaEssayRepository implements EssayRepository {
-  async save(essay: Essay): Promise<Essay> {
-    console.log('📝 [SAVE] Essay id:', essay.getId())
-    console.log('📝 [SAVE] Student id:', essay.getStudentId())
 
+  async save(essay: Essay): Promise<Essay> {
     const created = await prisma.essay.create({
       data: {
         id: essay.getId(),
@@ -17,8 +15,6 @@ export class PrismaEssayRepository implements EssayRepository {
         status: EssayStatus.SUBMITTED,
       },
     })
-
-    console.log('✅ [SAVE] Persistido no banco:', created)
 
     return Essay.restore(
       {
@@ -33,14 +29,14 @@ export class PrismaEssayRepository implements EssayRepository {
   }
 
   async findById(id: string): Promise<Essay | null> {
-
     const found = await prisma.essay.findUnique({
       where: { id },
+      include: {
+        correction: true // já preparado
+      }
     })
 
-    if (!found) {
-      return null
-    }
+    if (!found) return null
 
     return Essay.restore(
       {
@@ -60,34 +56,29 @@ export class PrismaEssayRepository implements EssayRepository {
     limit: number
     status?: EssayStatus
   }): Promise<{ items: Essay[]; total: number }> {
-    const { studentId, page, limit, status } = params
 
-    console.log('📚 [FIND_BY_STUDENT]', {
-      studentId,
-      page,
-      limit,
-      status,
-    })
+    const { studentId, page, limit, status } = params
 
     const where = {
       studentId,
       ...(status && { status }),
     }
 
-    const [items, total] = await Promise.all([
+    const [essays, total] = await Promise.all([
       prisma.essay.findMany({
         where,
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
+        include: {
+          correction: true // 🔥 importante para o próximo passo
+        }
       }),
       prisma.essay.count({ where }),
     ])
 
-    console.log('📊 [FIND_BY_STUDENT] Encontrados:', items.length)
-
     return {
-      items: items.map((essay) =>
+      items: essays.map((essay) =>
         Essay.restore(
           {
             theme: essay.theme,
