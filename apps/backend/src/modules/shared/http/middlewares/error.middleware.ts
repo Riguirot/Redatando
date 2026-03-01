@@ -1,43 +1,32 @@
 import { Request, Response, NextFunction } from 'express'
-import { BusinessError } from '../../errors/BusinessError'
+import { AppError } from '../../errors/AppError'
+import { successResponse } from '../response'
 
 export function errorMiddleware(
-  error: Error,
+  err: unknown,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  if (error instanceof BusinessError) {
-    const statusMap: Record<
-      'NOT_FOUND' | 'FORBIDDEN' | 'UNAUTHENTICATED' | 'FILE_REQUIRED',
-      number
-    > = {
-      NOT_FOUND: 404,
-      FORBIDDEN: 403,
-      UNAUTHENTICATED: 401,
-      FILE_REQUIRED: 400,
-    }
-
-    const status =
-      statusMap[error.code as keyof typeof statusMap] ?? 400
-
-    return res.status(status).json({
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
       success: false,
       data: null,
       error: {
-        message: error.message,
-        code: error.code,
-      },
+        message: err.message,
+        code: err.code
+      }
     })
   }
 
-  // erro inesperado
+  console.error(err)
+
   return res.status(500).json({
     success: false,
     data: null,
     error: {
       message: 'Internal server error',
-      code: 'INTERNAL_SERVER_ERROR',
-    },
+      code: 'INTERNAL_SERVER_ERROR'
+    }
   })
 }

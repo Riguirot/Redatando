@@ -1,17 +1,14 @@
 export class AppError extends Error {
-  public readonly statusCode: number;
-  public readonly code: string;
+  public readonly statusCode: number
+  public readonly code: string
 
   constructor(
     message: string,
-    statusCode: number = 400,
-    code: string = "APP_ERROR"
+    statusCode = 400,
+    code = 'APP_ERROR'
   ) {
-    super(message);
-
-    this.statusCode = statusCode;
-    this.code = code;
-
-    Object.setPrototypeOf(this, AppError.prototype);
+    super(message)
+    this.statusCode = statusCode
+    this.code = code
   }
 }

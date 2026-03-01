@@ -1,11 +1,17 @@
 import { Request, Response } from "express"
-import { getProgressFocus } from "./progress.service"
+import { successResponse } from "../shared/http/response"
+import { AppError } from "../shared/errors/AppError"
+import { GetProgressFocusUseCase } from "./application/GetProgressFocusUseCase"
 
 export const getProgress = async (req: Request, res: Response) => {
-  // 🚨 Temporário
   const userId = "mock-user-id"
 
-  const focus = await getProgressFocus(userId)
+  if (!userId) {
+    throw new AppError("Unauthorized", 401, "UNAUTHORIZED")
+  }
 
-  return res.json(focus)
+  const useCase = new GetProgressFocusUseCase()
+  const result = useCase.execute(userId)
+
+  return successResponse(res, result)
 }

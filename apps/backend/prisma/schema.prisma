@@ -6,7 +6,6 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model Content {
   id        String   @id @default(uuid())
   title     String
@@ -28,15 +27,25 @@ model CreditTransaction {
 }
 
 model Essay {
-  id        String   @id @default(uuid())
-  studentId String
-  theme     String
-  fileUrl   String
-  status    String
+  id         String   @id @default(uuid())
+  studentId  String
+  theme      String
+  fileUrl    String
+  status     String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  student    Student  @relation(fields: [studentId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([studentId])
 }
 
+model Student {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  essays    Essay[]
+}

@@ -1,8 +1,8 @@
-import { Response } from "express";
+import { Response } from 'express'
 
-interface ErrorPayload {
-  message: string;
-  code?: string;
+export interface ErrorPayload {
+  message: string
+  code: string
 }
 
 export function successResponse<T>(
@@ -14,7 +14,7 @@ export function successResponse<T>(
     success: true,
     data,
     error: null
-  });
+  })
 }
 
 export function errorResponse(
@@ -26,5 +26,5 @@ export function errorResponse(
     success: false,
     data: null,
     error
-  });
+  })
 }
