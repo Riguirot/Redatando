@@ -1,9 +1,10 @@
+/// <reference types="node" />
+
 import { prisma } from "../src/modules/shared/database/prismaClient"
 
 async function main() {
   console.log("🌱 Seeding database...")
 
-  // 🔹 Criar Student
   const student = await prisma.student.upsert({
     where: { email: "luiz@email.com" },
     update: {},
@@ -15,63 +16,92 @@ async function main() {
     },
   })
 
-  // 🔹 Criar Essays
-  const essay1 = await prisma.essay.create({
-    data: {
-      theme: "Democracia e Participação Social",
-      fileUrl: "https://example.com/redacao1.pdf",
-      status: "CORRECTED",
-      studentId: student.id,
-    },
-  })
+  // datas
 
-  const essay2 = await prisma.essay.create({
-    data: {
-      theme: "Desafios da Educação no Brasil",
-      fileUrl: "https://example.com/redacao2.pdf",
-      status: "CORRECTED",
-      studentId: student.id,
-    },
-  })
+  const dates = [
 
-  const essay3 = await prisma.essay.create({
-    data: {
-      theme: "Impacto da Tecnologia na Sociedade",
-      fileUrl: "https://example.com/redacao3.pdf",
-      status: "IN_REVIEW",
-      studentId: student.id,
-    },
-  })
+    "2026-03-02",
 
-  // 🔹 Correções reais (nota ENEM padrão 0–200 por competência)
+    // cluster 3
+    "2026-03-05",
+    "2026-03-05",
+    "2026-03-05",
 
-  await prisma.correction.create({
-    data: {
-      essayId: essay1.id,
-      c1: 160,
-      c2: 140,
-      c3: 120,
-      c4: 160,
-      c5: 180,
-      total: 760,
-      feedback: "Boa argumentação, mas repertório sociocultural pode melhorar.",
-    },
-  })
+    "2026-03-08",
 
-  await prisma.correction.create({
-    data: {
-      essayId: essay2.id,
-      c1: 180,
-      c2: 160,
-      c3: 140,
-      c4: 160,
-      c5: 180,
-      total: 820,
-      feedback: "Estrutura bem consolidada, melhorar aprofundamento crítico.",
-    },
-  })
+    // cluster 5
+    "2026-03-11",
+    "2026-03-11",
+    "2026-03-11",
+    "2026-03-11",
+    "2026-03-11",
 
-  // 🔹 Temas recomendados por competência
+    "2026-03-13",
+    "2026-03-16",
+    "2026-03-18",
+    "2026-03-23",
+    "2026-03-26",
+    "2026-03-29",
+  ]
+
+  // notas (cluster com mesma nota)
+
+  const scores = [
+
+    760,
+
+    // 05
+    800,
+    800,
+    800,
+
+    // 08
+    790,
+
+    // 11
+    820,
+    820,
+    820,
+    820,
+    820,
+
+    // restantes
+    830,
+    845,
+    860,
+    870,
+    880,
+    900,
+  ]
+
+  for (let i = 0; i < dates.length; i++) {
+
+    const essay = await prisma.essay.create({
+      data: {
+        theme: `Tema teste ${i + 1}`,
+        fileUrl: `https://example.com/redacao${i + 1}.pdf`,
+        status: "CORRECTED",
+        studentId: student.id,
+        createdAt: new Date(dates[i]),
+      },
+    })
+
+    await prisma.correction.create({
+      data: {
+        essayId: essay.id,
+        c1: 160,
+        c2: 160,
+        c3: 150,
+        c4: 160,
+        c5: 170,
+        total: scores[i],
+        feedback: "Correção simulada para testes do dashboard.",
+        createdAt: new Date(dates[i]),
+      },
+    })
+
+  }
+
   await prisma.recommendedTheme.createMany({
     data: [
       { title: "Cidadania Digital e Fake News", focusCompetency: "C3" },
@@ -84,6 +114,7 @@ async function main() {
   })
 
   console.log("✅ Seed finished successfully")
+
 }
 
 main()

@@ -1,10 +1,10 @@
 ---
 import MetricCard from "./MetricCard.astro";
 
-import DocumentIcon from "../../icons/DocumentIcon.astro";
-import StarIcon from "../../icons/StarIcon.astro";
-import FlameIcon from "../../icons/FlameIcon.astro";
-import BarChartIcon from "../../icons/BarChartIcon.astro";
+import documentIcon from "../../icons/documentIcon.svg";
+import AstroFlag from "../../icons/AstroFlag.svg";
+import FlameChart from "../../icons/FlameChart.svg";
+import TrophyChart from "../../icons/TrophyChart.svg";
 
 import type { EvolutionResult } from "../../domain/services/calculateEvolution";
 import type { DashboardMetric } from "../../types/dashboard";
@@ -24,6 +24,7 @@ const {
 } = Astro.props;
 
 const { value, trend } = evolutionLastThree;
+const formattedAverageScore = Number(averageScore.toFixed(1));
 
 const evolutionVariation =
   trend === "up"
@@ -41,42 +42,46 @@ const metrics: DashboardMetric[] = [
     value: totalEssays,
     variation: "+2",
     variationType: "positive",
-    icon: DocumentIcon,
+    icon: documentIcon,
     iconColor: "text-purple-500",
-    iconBg: "bg-purple-500/10",
+    iconBg: "null",
+    iconSize: "w-25 h-25",
   },
   {
     title: "Média Geral",
-    value: averageScore,
+    value: formattedAverageScore,
     variation: "+18",
     variationType: "positive",
-    icon: StarIcon,
+    icon: AstroFlag,
     iconColor: "text-yellow-500",
-    iconBg: "bg-yellow-500/10",
+    iconBg: "null",
+    iconSize: "w-25 h-25"
   },
   {
     title: "Evolução Recente",
     value: value,
     variation: evolutionVariation,
     variationType: evolutionVariationType,
-    icon: BarChartIcon,
+    icon: TrophyChart,
     iconColor: "text-blue-500",
-    iconBg: "bg-blue-500/10",
+    iconBg: "null",
+    iconSize: "w-25 h-25"
   },
   {
     title: "Semanas em sequência",
     value: streakWeeks,
     variation: "Consistência ativa",
     variationType: "positive",
-    icon: FlameIcon,
+    icon: FlameChart,
     iconColor: "text-orange-500",
-    iconBg: "bg-orange-500/10",
+    iconBg: "null",
+    iconSize: "w-25 h-25"
   },
 ];
 ---
 
 <section class="mb-12">
-  <div class="max-w-6xl mx-auto">
+  <div class="max-w-7xl mx-auto px-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       {metrics.map((metric) => (
         <MetricCard {...metric} />

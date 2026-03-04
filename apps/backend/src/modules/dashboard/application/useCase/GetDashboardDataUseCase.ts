@@ -51,6 +51,61 @@ export class GetDashboardDataUseCase {
     const corrections =
       await this.correctionRepository.findByEssayIds(essayIds)
 
+    // ------------------------------
+    // SCORE HISTORY (AGRUPADO POR DIA)
+    // ------------------------------
+
+    const groupedCorrections: Record<
+      string,
+      {
+        date: string
+        total: number
+        essays: {
+          id: string
+          theme: string
+          total: number
+        }[]
+      }
+    > = {}
+
+    for (const correction of corrections) {
+
+      const essay = essays.items.find(
+        (e) => e.getIdOrThrow() === correction.essayId
+      )
+
+      if (!essay) continue
+
+      const date = correction.createdAt.toISOString().split("T")[0]
+
+      if (!groupedCorrections[date]) {
+        groupedCorrections[date] = {
+          date,
+          total: correction.total,
+          essays: []
+        }
+      }
+
+      groupedCorrections[date].essays.push({
+        id: essay.getIdOrThrow(),
+        theme: essay.getTheme(),
+        total: correction.total
+      })
+    }
+
+    const scoreHistory = Object.values(groupedCorrections)
+      .map((item) => ({
+        day: new Date(item.date).getDate(),
+        date: item.date,
+        total: item.total,
+        essays: item.essays
+      }))
+      .sort(
+        (a, b) =>
+          new Date(a.date).getTime() -
+          new Date(b.date).getTime()
+      )
+
     const correctedCount = corrections.length
 
     let avgC1 = 0
@@ -100,6 +155,8 @@ export class GetDashboardDataUseCase {
         )
     }
 
+    console.log("SCORE HISTORY:", scoreHistory)
+
     // ============================
     // 🚀 RESPONSE
     // ============================
@@ -125,7 +182,8 @@ export class GetDashboardDataUseCase {
           c5: avgC5,
           total: avgTotal
         },
-        weakestCompetency
+        weakestCompetency,
+        scoreHistory
       },
 
       recommendedThemes,

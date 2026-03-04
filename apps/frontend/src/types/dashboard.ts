@@ -6,4 +6,5 @@ export interface DashboardMetric {
   icon: any
   iconColor: string
   iconBg: string
+  iconSize?: string
 }

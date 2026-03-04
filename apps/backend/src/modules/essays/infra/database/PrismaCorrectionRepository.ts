@@ -13,14 +13,15 @@ export class PrismaCorrectionRepository implements CorrectionRepository {
       }
     })
 
-    return corrections.map(c => ({
+    return corrections.map((c) => ({
       essayId: c.essayId,
       c1: c.c1,
       c2: c.c2,
       c3: c.c3,
       c4: c.c4,
       c5: c.c5,
-      total: c.total
+      total: c.total,
+      createdAt: c.createdAt,
     }))
   }
 }

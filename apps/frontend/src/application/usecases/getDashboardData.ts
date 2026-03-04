@@ -30,7 +30,15 @@ interface DashboardViewModel {
   insights: any[];
   competencies: CompetencyViewModel[];
   overallProgress: number;
-  scoresHistory: number[];
+  scoreHistory: {
+    day: number
+    date: string
+    total: number
+    essays: {
+      theme: string
+      total: number
+    }[]
+  }[]
   evolutionTotal: number;
 
   progressFocus: ProgressFocusViewModel | null;
@@ -51,6 +59,7 @@ export async function getDashboardData(): Promise<DashboardViewModel> {
   }
 
   const backendData = await response.json();
+  console.log("BACKEND DATA:", backendData)
 
   // 🔥 Aqui usamos a função REAL do domínio
   const evolutionLastThree = calculateEvolution([]);
@@ -102,7 +111,7 @@ export async function getDashboardData(): Promise<DashboardViewModel> {
       { label: "C5", value: backendData.analytics.averages.c5, max: 200 },
     ],
     overallProgress: backendData.analytics.averages.total,
-    scoresHistory: [650, 720, 690, 780, 820],
+    scoreHistory: backendData.analytics.scoreHistory ?? [],
     evolutionTotal: 0,
 
     // ===== PROGRESS FOCUS =====

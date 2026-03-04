@@ -2,6 +2,7 @@
 import CompetencyBar from "./CompetencyBar.astro";
 import ProgressBar from "./ProgressBar.astro";
 import ScoreEvolutionChart from "./ScoreEvolutionChart.astro";
+import GraficProgressIcon from "../../icons/graficProgress.svg";
 
 interface Competency {
   label: string;
@@ -9,30 +10,44 @@ interface Competency {
   max: number;
 }
 
+interface ScoreHistoryItem {
+  day: number
+  date: string
+  total: number
+  essays: {
+    theme: string
+    total: number
+  }[]
+}
+
 interface Props {
   competencies: Competency[];
   overallProgress: number;
   evolutionTotal: number;
-  scoresHistory: number[]; // [600, null, 800...]
+  scoreHistory: ScoreHistoryItem[];
 }
+
+const now = new Date();
+const currentYear = now.getFullYear();
+const currentMonth = now.getMonth(); // 0–11
 
 const {
   competencies,
   overallProgress,
   evolutionTotal,
-  scoresHistory = [],
+  scoreHistory = [],
 } = Astro.props;
 
-/* -------------------------------
-   Converte number[] em estrutura
-   temporal para o gráfico
--------------------------------- */
+/* ---------------------------------------
+   Converte scoreHistory em estrutura
+   temporal (dia do mês real)
+---------------------------------------- */
 
-const weekLabels = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
-
-const chartData = weekLabels.map((label, i) => ({
-  label,
-  score: scoresHistory[i] ?? null,
+const chartData = scoreHistory.map((item) => ({
+  day: item.day,
+  date: item.date,
+  total: item.total,
+  essays: item.essays
 }));
 ---
 
@@ -44,8 +59,10 @@ const chartData = weekLabels.map((label, i) => ({
     <div class="flex justify-between items-start mb-8">
       <div>
         <h3 class="text-xl font-bold flex items-center gap-2">
-          📊 Desempenho Analítico
+          <GraficProgressIcon class="w-20 h-20 text-purple-600 dark:text-purple-400" />
+          Desempenho Analítico
         </h3>
+
         <p class="text-sm text-neutral-600 dark:text-neutral-400">
           Evolução das Notas
         </p>
@@ -66,7 +83,11 @@ const chartData = weekLabels.map((label, i) => ({
     {/* ---------------- GRÁFICO ---------------- */}
 
     <div class="mb-10">
-      <ScoreEvolutionChart data={chartData} />
+      <ScoreEvolutionChart
+        data={chartData}
+        year={currentYear}
+        month={currentMonth}
+      />
     </div>
 
     {/* ---------------- COMPETÊNCIAS ---------------- */}
@@ -113,8 +134,8 @@ const chartData = weekLabels.map((label, i) => ({
       <ProgressBar percentage={overallProgress} height="12px" />
 
       <p class="text-sm mt-4 text-neutral-600 dark:text-neutral-400">
-        Você está muito perto da excelência! Continue praticando
-        para maximizar todas as competências.
+        Você está muito perto da excelência! Continue praticando para
+        maximizar todas as competências.
       </p>
     </div>
 

@@ -1,89 +1,107 @@
 ---
 interface ChartItem {
-  label: string;
-  score: number | null;
-  theme?: string;
-  date?: string;
+  day: number
+  date: string
+  total: number
+  essays: {
+    theme: string
+    total: number
+  }[]
 }
 
 interface Props {
-  data?: ChartItem[];
+  data?: ChartItem[]
+  year: number
+  month: number
 }
 
-const { data = [] }: Props = Astro.props;
+const { data = [], year, month }: Props = Astro.props
 
-/* ---------- CONFIG ---------- */
+const width = 1200
+const height = 400
 
-const width = 1200;
-const height = 400;
+const paddingLeft = 80
+const paddingRight = 40
+const paddingTop = 40
+const paddingBottom = 50
 
-const paddingLeft = 80;
-const paddingRight = 40;
-const paddingTop = 40;
-const paddingBottom = 50;
+const chartWidth = width - paddingLeft - paddingRight
+const chartHeight = height - paddingTop - paddingBottom
 
-const chartWidth = width - paddingLeft - paddingRight;
-const chartHeight = height - paddingTop - paddingBottom;
+const maxValue = 1000
+const minValue = 0
 
-const maxValue = 1000;
-const minValue = 0;
+const daysInMonth = new Date(year, month + 1, 0).getDate()
+const stepX = chartWidth / (daysInMonth - 1)
 
-/* ---------- PROTEÇÃO ---------- */
-
-const safeLength = Math.max(data.length, 2);
-const stepX = chartWidth / (safeLength - 1);
-
-/* ---------- CONVERTE DATA ---------- */
-
-type Point = { x: number; y: number };
+type Point = {
+  x: number
+  y: number
+  item: ChartItem
+}
 
 const points: Point[] = data
-  .map((item, i) => {
-    if (item.score === null) return null;
+  .filter(item => item.date && typeof item.total === "number")
+  .map(item => {
 
-    const x = paddingLeft + i * stepX;
-    const normalized = (item.score - minValue) / (maxValue - minValue);
+    const day = new Date(item.date).getDate()
+
+    const x = paddingLeft + (day - 1) * stepX
+
+    const normalized =
+      (item.total - minValue) /
+      (maxValue - minValue)
+
     const y =
       paddingTop +
       chartHeight -
-      normalized * chartHeight;
+      normalized * chartHeight
 
-    return { x, y };
+    return { x, y, item }
+
   })
-  .filter((p): p is Point => p !== null);
+  .sort(
+    (a, b) =>
+      new Date(a.item.date).getTime() -
+      new Date(b.item.date).getTime()
+  )
 
-/* ---------- PATH DA LINHA ---------- */
+let linePath = ""
 
-let linePath = "";
 if (points.length > 0) {
   linePath = points
     .map((p, i) =>
       `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`
     )
-    .join(" ");
+    .join(" ")
 }
 
-/* ---------- ÁREA ---------- */
+const baseY = paddingTop + chartHeight
 
-const baseY = paddingTop + chartHeight;
+let areaPath = ""
 
-let areaPath = "";
 if (points.length > 0) {
   areaPath = `
     ${linePath}
     L ${points.at(-1)!.x} ${baseY}
     L ${points[0].x} ${baseY}
     Z
-  `;
+  `
 }
 
-/* ---------- EIXO Y ---------- */
-
-const yTicks = [1000, 800, 600, 400, 200, 0];
+const yTicks = [1000, 800, 600, 400, 200, 0]
 
 function getYPosition(value: number) {
-  const normalized = (value - minValue) / (maxValue - minValue);
-  return paddingTop + chartHeight - normalized * chartHeight;
+
+  const normalized =
+    (value - minValue) /
+    (maxValue - minValue)
+
+  return (
+    paddingTop +
+    chartHeight -
+    normalized * chartHeight
+  )
 }
 ---
 
@@ -99,178 +117,291 @@ function getYPosition(value: number) {
 }
 
 .chart-glow {
-  filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.7));
+  filter: drop-shadow(0 0 10px rgba(6,182,212,0.7));
 }
 </style>
 
 <div class="w-full">
 
-  {data.length === 0 && (
-    <div class="text-sm text-gray-500 p-6">
-      Nenhum dado disponível ainda.
-    </div>
+{data.length === 0 && (
+  <div class="text-sm text-slate-400 p-6">
+    Nenhuma redação neste mês ainda.
+  </div>
+)}
+
+{points.length > 0 && (
+
+<svg
+  viewBox={`0 0 ${width} ${height}`}
+  preserveAspectRatio="xMidYMid meet"
+  class="w-full h-80"
+>
+
+{/* GRID Y */}
+
+{yTicks.map((tick) => (
+
+<>
+<line
+  x1={paddingLeft}
+  x2={width - paddingRight}
+  y1={getYPosition(tick)}
+  y2={getYPosition(tick)}
+  class="stroke-slate-700/30 dark:stroke-slate-600/40"
+  stroke-width="1"
+/>
+
+<text
+  x={paddingLeft - 15}
+  y={getYPosition(tick) + 4}
+  text-anchor="end"
+  font-size="12"
+  fill="rgba(148,163,184,0.7)"
+>
+{tick}
+</text>
+</>
+
+))}
+
+{/* DIAS DO MÊS */}
+
+{Array.from({ length: daysInMonth }, (_, i) => (
+
+<text
+  x={paddingLeft + i * stepX}
+  y={height - 15}
+  text-anchor="middle"
+  font-size="11"
+  fill="rgba(148,163,184,0.7)"
+>
+{i + 1}
+</text>
+
+))}
+
+{/* GRADIENTES */}
+
+<defs>
+
+<linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+  <stop offset="0%" stop-color="#8b5cf6"/>
+  <stop offset="100%" stop-color="#06b6d4"/>
+</linearGradient>
+
+<linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+  <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35"/>
+  <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+</linearGradient>
+
+</defs>
+
+{/* ÁREA */}
+
+{points.length > 1 && (
+  <path d={areaPath} fill="url(#areaGrad)" />
+)}
+
+{/* LINHA */}
+
+{points.length > 1 && (
+  <path
+    d={linePath}
+    fill="none"
+    stroke="url(#lineGrad)"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+)}
+
+{/* PONTOS */}
+
+{points.map((p, i) => {
+
+  const isLast = i === points.length - 1
+  const essays = p.item.essays ?? []
+
+  return (
+
+  <g class="group cursor-pointer">
+
+  {/* HIT AREA */}
+
+  <circle
+    cx={p.x}
+    cy={p.y}
+    r="18"
+    fill="transparent"
+  />
+
+  {/* TOOLTIP PRINCIPAL */}
+
+  <g class="opacity-0 group-hover:opacity-100 transition duration-200">
+
+  <rect
+    x={p.x - 110}
+    y={p.y - 115}
+    width="220"
+    height="85"
+    rx="14"
+    fill="#0f172a"
+    stroke="#8b5cf6"
+    stroke-width="1.2"
+  />
+
+  <text
+    x={p.x}
+    y={p.y - 85}
+    text-anchor="middle"
+    font-size="12"
+    fill="#a78bfa"
+  >
+  {p.item.essays[0]?.theme ?? "Redação corrigida"}
+  </text>
+
+  <text
+    x={p.x}
+    y={p.y - 60}
+    text-anchor="middle"
+    font-size="15"
+    font-weight="bold"
+    fill="#06b6d4"
+  >
+  Nota: {p.item.total}
+  </text>
+
+  <text
+    x={p.x}
+    y={p.y - 40}
+    text-anchor="middle"
+    font-size="11"
+    fill="#94a3b8"
+  >
+  {p.item.date}
+  </text>
+
+  </g>
+
+  {/* PULSE */}
+
+  {isLast && (
+
+  <circle
+    cx={p.x}
+    cy={p.y}
+    r="10"
+    fill="none"
+    stroke="#06b6d4"
+    stroke-width="6"
+    class="chart-pulse"
+  />
+
   )}
 
-  {data.length > 0 && (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      preserveAspectRatio="xMidYMid meet"
-      class="w-full h-[320px]"
-    >
+  {/* PONTO CENTRAL */}
 
-      {/* GRID + Y AXIS */}
-      {yTicks.map((tick) => (
-        <>
-          <line
-            x1={paddingLeft}
-            x2={width - paddingRight}
-            y1={getYPosition(tick)}
-            y2={getYPosition(tick)}
-            stroke="rgba(139,92,246,0.08)"
-            stroke-width="1"
-          />
-          <text
-            x={paddingLeft - 15}
-            y={getYPosition(tick) + 4}
-            text-anchor="end"
-            font-size="12"
-            fill="rgba(148,163,184,0.7)"
-          >
-            {tick}
-          </text>
-        </>
-      ))}
+  <circle
+    cx={p.x}
+    cy={p.y}
+    r={isLast ? 10 : 5}
+    fill={isLast ? "#06b6d4" : "#8b5cf6"}
+    class={isLast ? "chart-glow" : ""}
+  />
 
-      {/* X AXIS */}
-      {data.map((item, i) => (
-        <text
-          x={paddingLeft + i * stepX}
-          y={height - 15}
-          text-anchor="middle"
-          font-size="12"
-          fill="rgba(148,163,184,0.7)"
-        >
-          {item.label}
-        </text>
-      ))}
+  {/* CLUSTER RADIAL */}
 
-      {/* GRADIENT */}
-      <defs>
-        <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35" />
-          <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
-        </linearGradient>
-      </defs>
+  {essays.length > 1 &&
+    essays.slice(1).map((essay, idx) => {
 
-      {/* ÁREA */}
-      {points.length > 0 && (
-        <path d={areaPath} fill="url(#chartGrad)" />
-      )}
+      const count = essays.length - 1
+      const angle = (Math.PI * 2 / count) * idx
+      const radius = 16 + essays.length * 2
 
-      {/* LINHA */}
-      {points.length > 0 && (
-        <path
-          d={linePath}
-          fill="none"
-          stroke="#8b5cf6"
-          stroke-width="3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      )}
+      const rx = p.x + Math.cos(angle) * radius
+      const ry = p.y + Math.sin(angle) * radius
 
-      {/* PONTOS + TOOLTIP */}
-      {points.map((p, i) => {
-        const isLast = i === points.length - 1;
-        const item = data[i];
+      return (
 
-        return (
-          <g class="group cursor-pointer">
+      <g class="subpoint cursor-pointer">
 
-            {/* HIT AREA INVISÍVEL */}
-            <circle
-              cx={p.x}
-              cy={p.y}
-              r="18"
-              fill="transparent"
-            />
+      <line
+        x1={p.x}
+        y1={p.y}
+        x2={rx}
+        y2={ry}
+        stroke="#22c55e"
+        stroke-width="1"
+        opacity="0.6"
+      />
 
-            {/* TOOLTIP */}
-            {item.score !== null && (
-              <g class="opacity-0 group-hover:opacity-100 transition duration-200">
+      <circle
+        cx={rx}
+        cy={ry}
+        r="10"
+        fill="transparent"
+      />
 
-                <rect
-                  x={p.x - 110}
-                  y={p.y - 115}
-                  width="220"
-                  height="85"
-                  rx="14"
-                  fill="#0f172a"
-                  stroke="#8b5cf6"
-                  stroke-width="1.2"
-                />
+      <circle
+        cx={rx}
+        cy={ry}
+        r="4"
+        fill="#22c55e"
+      />
 
-                <text
-                  x={p.x}
-                  y={p.y - 85}
-                  text-anchor="middle"
-                  font-size="12"
-                  fill="#a78bfa"
-                >
-                  {item.theme ?? "Tema não informado"}
-                </text>
+      {/* TOOLTIP SUBPONTO */}
 
-                <text
-                  x={p.x}
-                  y={p.y - 60}
-                  text-anchor="middle"
-                  font-size="15"
-                  font-weight="bold"
-                  fill="#06b6d4"
-                >
-                  Nota: {item.score}
-                </text>
+      <g class="opacity-0 hover:opacity-100 transition duration-200">
 
-                <text
-                  x={p.x}
-                  y={p.y - 40}
-                  text-anchor="middle"
-                  font-size="11"
-                  fill="#94a3b8"
-                >
-                  {item.date ?? ""}
-                </text>
+      <rect
+        x={rx - 90}
+        y={ry - 60}
+        width="180"
+        height="55"
+        rx="10"
+        fill="#0f172a"
+        stroke="#22c55e"
+        stroke-width="1"
+      />
 
-              </g>
-            )}
+      <text
+        x={rx}
+        y={ry - 35}
+        text-anchor="middle"
+        font-size="11"
+        fill="#22c55e"
+      >
+      {essay.theme}
+      </text>
 
-            {/* PULSE DO ÚLTIMO */}
-            {isLast && (
-              <circle
-                cx={p.x}
-                cy={p.y}
-                r="10"
-                fill="none"
-                stroke="#06b6d4"
-                stroke-width="6"
-                class="chart-pulse"
-              />
-            )}
+      <text
+        x={rx}
+        y={ry - 18}
+        text-anchor="middle"
+        font-size="12"
+        font-weight="bold"
+        fill="#a7f3d0"
+      >
+      Nota: {p.item.total}
+      </text>
 
-            {/* PONTO VISUAL REAL */}
-            <circle
-              cx={p.x}
-              cy={p.y}
-              r={isLast ? 10 : 5}
-              fill={isLast ? "#06b6d4" : "#8b5cf6"}
-              class={isLast ? "chart-glow" : ""}
-            />
+      </g>
 
-          </g>
-        );
-      })}
+      </g>
 
-    </svg>
-  )}
+      )
+
+    })
+  }
+
+  </g>
+
+  )
+
+})}
+
+</svg>
+
+)}
 
 </div>

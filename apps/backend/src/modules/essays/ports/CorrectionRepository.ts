@@ -8,6 +8,7 @@ export interface CorrectionRepository {
       c4: number
       c5: number
       total: number
+      createdAt: Date
     }[]
   >
 }

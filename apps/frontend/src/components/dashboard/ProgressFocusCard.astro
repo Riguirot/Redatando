@@ -1,4 +1,6 @@
 ---
+import ProgressFocusIcon from "../../icons/progressFocus.svg";
+
 interface Props {
   focus: {
     weakestCompetence: string;
@@ -19,9 +21,13 @@ const competenceName = competenceMap[focus.weakestCompetence] ?? "";
 ---
 
 <div class="glass-card w-full">
+
   {/* Header */}
   <div class="flex items-center gap-3 mb-2">
-    <span class="text-lg">🎯</span>
+    <span class="flex items-center justify-center">
+      <ProgressFocusIcon class="w-15 h-15 text-orange-500 dark:text-orange-400" />
+    </span>
+
     <div>
       <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
         Plano de Progresso
@@ -40,6 +46,7 @@ const competenceName = competenceMap[focus.weakestCompetence] ?? "";
       <span class="text-3xl font-bold text-orange-500">
         {focus.weakestCompetence}
       </span>
+
       <span class="text-base font-medium text-neutral-800 dark:text-neutral-200">
         {competenceName}
       </span>
@@ -59,14 +66,13 @@ const competenceName = competenceMap[focus.weakestCompetence] ?? "";
 
   {/* CTA */}
   <a
-      href={`/dashboard/competences/${focus.weakestCompetence}`}
-      class="w-full inline-flex items-center justify-center gap-2
-      px-6 py-3 rounded-xl font-medium text-white
-      bg-linear-to-r from-purple-600 to-purple-500
-      hover:opacity-90 transition-all duration-300"
-    >
-        <span>↻</span>
-        Revisar material dessa competência
-      </a>
+    href={`/dashboard/competences/${focus.weakestCompetence}`}
+    class="w-full inline-flex items-center justify-center gap-2
+           px-6 py-3 rounded-xl font-medium text-white
+           bg-linear-to-r from-purple-600 to-purple-500
+           hover:opacity-90 transition-all duration-300"
+  >
+    Revisar material dessa competência
+  </a>
 
 </div>
